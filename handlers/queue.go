@@ -7,26 +7,18 @@ import (
 )
 
 //Index: return a status true to tell if the app is live
-func Query(w http.ResponseWriter, r *http.Request) {
-	var q db.Query
+func Queue(w http.ResponseWriter, r *http.Request) {
 	response := make(map[string]interface{})
 
-	//read json
-	err := json.NewDecoder(r.Body).Decode(q)
-	if err != nil {
-		ReturnStatusBadRequest(w, "Failed to decode query json")
-		return
-	}
-
 	//add query
-	key, err := db.AddQuery(q)
+	queries, err := db.GetQueue(10)
 	if err != nil {
 		ReturnInternalServerError(w, err.Error())
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response["key"] = key
+	response["queue"] = queries
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)
 }

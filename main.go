@@ -24,6 +24,9 @@ func main() {
 func getRoutes() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.Index)
+	mux.HandleFunc("/query", handlers.Query)
+	mux.HandleFunc("/queue", handlers.Queue)
+	mux.HandleFunc("/answer", handlers.Queue)
 	return mux
 }
 

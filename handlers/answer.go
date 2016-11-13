@@ -7,7 +7,7 @@ import (
 )
 
 //Index: return a status true to tell if the app is live
-func Query(w http.ResponseWriter, r *http.Request) {
+func Answer(w http.ResponseWriter, r *http.Request) {
 	var q db.Query
 	response := make(map[string]interface{})
 
@@ -19,14 +19,13 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//add query
-	key, err := db.AddQuery(q)
+	err = db.AnswerQuery(q.Key, q.Answer)
 	if err != nil {
 		ReturnInternalServerError(w, err.Error())
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response["key"] = key
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)
 }
