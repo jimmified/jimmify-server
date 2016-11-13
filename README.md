@@ -22,6 +22,12 @@ The server has two command line options:
 * -resetdb - clears and sets up the SQL database.
 * -log - turns on file logging
 
+I have also built a CLI in python for testing the endpoints. It can be run using
+
+```bash
+python3 cli.py
+```
+
 ##Documentation
 * The API is fully documented in the wiki.
-* Go documentation to come.
+* Go documentation in Wiki.
