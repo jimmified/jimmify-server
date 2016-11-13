@@ -10,7 +10,7 @@ import (
 func ReturnInternalServerError(w http.ResponseWriter, message string) {
 	log.Println(message)
 	response := make(map[string]string)
-	response["Status"] = "false"
+	response["status"] = "false"
 	w.WriteHeader(http.StatusInternalServerError)
 	json.NewEncoder(w).Encode(response)
 }
@@ -19,7 +19,7 @@ func ReturnInternalServerError(w http.ResponseWriter, message string) {
 func ReturnStatusBadRequest(w http.ResponseWriter, message string) {
 	log.Println(message)
 	response := make(map[string]string)
-	response["Status"] = "false"
+	response["status"] = "false"
 	w.WriteHeader(http.StatusBadRequest)
 	json.NewEncoder(w).Encode(response)
 }

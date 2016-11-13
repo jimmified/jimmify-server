@@ -12,7 +12,7 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 	response := make(map[string]interface{})
 
 	//read json
-	err := json.NewDecoder(r.Body).Decode(q)
+	err := json.NewDecoder(r.Body).Decode(&q)
 	if err != nil {
 		ReturnStatusBadRequest(w, "Failed to decode query json")
 		return
