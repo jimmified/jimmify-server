@@ -61,7 +61,7 @@ func TestDB(t *testing.T) {
 	log.Println(q)
 	//recently resolved
 	log.Println("Recently Resolved")
-	resolved, err := RecentlyResolved(10)
+	resolved, err := GetRecent(10)
 	if err != nil {
 		log.Println(err)
 	}

@@ -27,6 +27,7 @@ func getRoutes() *http.ServeMux {
 	mux.HandleFunc("/query", handlers.Query)
 	mux.HandleFunc("/queue", handlers.Queue)
 	mux.HandleFunc("/answer", handlers.Queue)
+	mux.HandleFunc("/check", handlers.Queue)
 	return mux
 }
 

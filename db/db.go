@@ -168,7 +168,7 @@ func CheckQuery(key int64) (Query, error) {
 }
 
 //RecentlyResolved get the recently resolved posts
-func RecentlyResolved(num int) ([]Query, error) {
+func GetRecent(num int) ([]Query, error) {
 	resolved := []Query{}
 	r := Query{}
 	//create sql query

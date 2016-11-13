@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-//Query: submit a query
-func Query(w http.ResponseWriter, r *http.Request) {
+//Check: check if post is answered
+func Check(w http.ResponseWriter, r *http.Request) {
 	var q db.Query
 	response := make(map[string]interface{})
 
@@ -19,14 +19,14 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//add query
-	key, err := db.AddQuery(q)
+	a, err := db.CheckQuery(q.Key)
 	if err != nil {
-		ReturnInternalServerError(w, err.Error())
+		ReturnStatusBadRequest(w, err.Error())
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response["key"] = key
+	response["answer"] = a
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)
 }

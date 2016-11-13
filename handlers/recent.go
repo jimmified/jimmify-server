@@ -6,19 +6,19 @@ import (
 	"net/http"
 )
 
-//Queue: return top of queue
-func Queue(w http.ResponseWriter, r *http.Request) {
+//Recent: get recent answered queries
+func Recent(w http.ResponseWriter, r *http.Request) {
 	response := make(map[string]interface{})
 
-	//get queue
-	queries, err := db.GetQueue(10)
+	//Get recent
+	recents, err := db.GetRecent(10)
 	if err != nil {
 		ReturnInternalServerError(w, err.Error())
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response["queue"] = queries
+	response["recents"] = recents
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)
 }

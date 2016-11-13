@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-//Index: return a status true to tell if the app is live
+//Answer: let jimmy answer queries
 func Answer(w http.ResponseWriter, r *http.Request) {
 	var q db.Query
 	response := make(map[string]interface{})
