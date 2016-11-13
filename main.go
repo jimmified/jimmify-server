@@ -15,8 +15,9 @@ func main() {
 	defer db.SQLDB.Close()
 	parseFlags()     //Command Line Arguments
 	r := getRoutes() //create routes
-	log.Println("Starting Jimmy Server..")
-	http.ListenAndServe(":8080", r)
+
+	log.Println("Starting Jimmy Server")
+	http.ListenAndServe(":3000", r)
 }
 
 //getRoutes: create server routes
@@ -34,14 +35,14 @@ func parseFlags() {
 	flag.Parse() //parse flags
 	//Handle flags
 	if *resetPtr == true {
-		log.Println("Resetting SQLite Database..")
+		log.Println("Resetting SQLite Database")
 		db.ResetDB()
 	}
 	if *logPtr == true {
 		err := os.Remove("server.log") //remove local copy
 		f, err := os.OpenFile("server.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
-			log.Fatal("Error opening logging file..")
+			log.Fatal("Error opening logging file")
 		}
 		log.SetOutput(f) //set logging to write to file
 	}

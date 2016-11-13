@@ -51,9 +51,8 @@ func InitDB() {
 //ResetDB remove existing database and recreate tables
 func ResetDB() {
 	//remove existing dataBasePath file
-	os.Remove(SQLPath)
+	os.Remove("./db.sqlite")
 	InitDB()
-	CreateTables()
 }
 
 //CreateDB create the user and posts tables
@@ -62,15 +61,16 @@ func CreateTables() {
 	CREATE TABLE queries (
 		key integer primary key autoincrement,
 		text varchar(255) not null,
-		type varchar(60) not null,
+		type varchar(60) not null
 	);
 	CREATE TABLE resolved (
 		key integer primary key not null,
 		text varchar(255) not null,
 		type varchar(60) not null,
-		answer varchar(500) null,
+		answer varchar(500) null
 	);
 	DELETE from queries;
+    DELETE from resolved;
 	`
 	//Create the users table
 	_, err := SQLDB.Exec(createTables)
@@ -172,7 +172,7 @@ func RecentlyResolved(num int) ([]Query, error) {
 	resolved := []Query{}
 	r := Query{}
 	//create sql query
-	rows, err := SQLDB.Query("SELECT key,text,type,answer FROM resolved LIMIT (?)", num)
+	rows, err := SQLDB.Query("SELECT key,text,type,answer FROM resolved ORDER BY key DESC LIMIT (?)", num)
 	defer rows.Close() //close query connection when function returns
 	if err != nil {
 		return resolved, errors.New("Error getting recently resolved")
@@ -182,7 +182,7 @@ func RecentlyResolved(num int) ([]Query, error) {
 		if err != nil {
 			return resolved, errors.New("Error scanning row")
 		}
-		resolved = append(resolved, q)
+		resolved = append(resolved, r)
 	}
 
 	return resolved, nil
