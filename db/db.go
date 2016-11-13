@@ -17,10 +17,10 @@ var SQLPath string
 
 //User type
 type Query struct {
-	Key    string
-	Text   string
-	Type   string
-	Answer string
+	Key    int64  `json:"key"`
+	Text   string `json:"text"`
+	Type   string `json:"type"`
+	Answer string `json:"answer"`
 }
 
 //InitDB init sql
