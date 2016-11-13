@@ -1,8 +1,9 @@
 package main
 
 import (
-	"bublserver/handlers"
 	"flag"
+	"jimmify-server/db"
+	"jimmify-server/handlers"
 	"log"
 	"net/http"
 	"os"
@@ -10,8 +11,8 @@ import (
 
 //main: initialize database and start server
 func main() {
-	//db.InitDB()
-	//defer db.SQLDB.Close()
+	db.InitDB()
+	defer db.SQLDB.Close()
 	parseFlags()     //Command Line Arguments
 	r := getRoutes() //create routes
 	log.Println("Starting Jimmy Server..")
@@ -29,8 +30,13 @@ func getRoutes() *http.ServeMux {
 func parseFlags() {
 	//create flag pointers
 	logPtr := flag.Bool("log", false, "Contols writing to log file.")
+	resetPtr := flag.Bool("resetdb", false, "Whether to reset the database.")
 	flag.Parse() //parse flags
 	//Handle flags
+	if *resetPtr == true {
+		log.Println("Resetting SQLite Database..")
+		db.ResetDB()
+	}
 	if *logPtr == true {
 		err := os.Remove("server.log") //remove local copy
 		f, err := os.OpenFile("server.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
