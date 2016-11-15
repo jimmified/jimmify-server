@@ -3,8 +3,11 @@ import json
 
 class API():
 
-	def __init__(self):
-		self.url = "http://localhost:3000/"
+	def __init__(self, remote):
+		if remote:
+			self.url = "http://shibboleth.student.rit.edu/"
+		else:
+			self.url = "http://localhost:3000/"
 
 	def query(self,text,typ):
 		r = {}
@@ -41,7 +44,12 @@ class API():
 
 if __name__ == '__main__':
 	print("Jimmy CLI Starting.. ")
-	jimmy = API()
+	i = input("local or remote? ")
+	if i == "remote":
+		remote = True
+	else:
+		remote = False
+	jimmy = API(remote)
 	#Start REPL
 	print("Use command 'help' for more options.")
 	while True:

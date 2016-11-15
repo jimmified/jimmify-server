@@ -5,7 +5,7 @@ import (
 	"errors"
 	"log"
 	"os"
-
+	//driver for sqlite
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -15,7 +15,7 @@ var SQLDB *sql.DB
 //SQLPath path do db
 var SQLPath string
 
-//User type
+//Query type
 type Query struct {
 	Key    int64  `json:"key"`
 	Text   string `json:"text"`
@@ -26,7 +26,7 @@ type Query struct {
 //InitDB init sql
 func InitDB() {
 	var err error
-	var created bool = false
+	var created = false
 	//check for the sqlite file
 	if _, err := os.Stat("./db.sqlite"); os.IsNotExist(err) {
 		log.Println("Creating database file")
@@ -40,6 +40,7 @@ func InitDB() {
 	SQLPath = "./db.sqlite"
 	SQLDB, err = sql.Open("sqlite3", SQLPath)
 	if err != nil {
+		log.Fatal(err)
 		log.Fatal("Database setup failed.")
 	}
 	//create tables if necessary
@@ -55,7 +56,7 @@ func ResetDB() {
 	InitDB()
 }
 
-//CreateDB create the user and posts tables
+//CreateTables create the user and posts tables
 func CreateTables() {
 	createTables := `
 	CREATE TABLE queries (
@@ -167,7 +168,7 @@ func CheckQuery(key int64) (Query, error) {
 	return q, nil
 }
 
-//RecentlyResolved get the recently resolved posts
+//GetRecent get the recently resolved posts
 func GetRecent(num int) ([]Query, error) {
 	resolved := []Query{}
 	r := Query{}
