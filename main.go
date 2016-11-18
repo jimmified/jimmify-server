@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"github.com/rs/cors"
 )
 
 //main: initialize database and start server
@@ -15,9 +16,12 @@ func main() {
 	defer db.SQLDB.Close()
 	parseFlags()     //Command Line Arguments
 	r := getRoutes() //create routes
+	c := cors.New(cors.Options{ // allow requests from localhost for local development
+		AllowedOrigins: []string{"http://localhost:*"},
+	})
 
 	log.Println("Starting Jimmy Server")
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(":3000", c.Handler(r))
 }
 
 //getRoutes: create server routes
