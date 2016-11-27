@@ -5,9 +5,18 @@ A REST api to talk to jimmy
 
 In order to set up the repo:
 * install go (I'm on 1.7)
-* clone jimmify-server in to your go/src/ folder
+* clone jimmify-server recursively in to your go/src/ folder
 * run ```go get```
 * run ```go install```
+* cd into jimmify-web
+* run ```npm install```
+* run ```grunt build```
+
+Dont have node/npm? Install it [here](https://nodejs.org/en/).
+
+Don't have grunt installed?
+
+* ```npm install -g grunt-cli```
 
 ##Usage
 

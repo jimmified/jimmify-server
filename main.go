@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"github.com/rs/cors"
 )
 
 //main: initialize database and start server
@@ -16,18 +15,17 @@ func main() {
 	defer db.SQLDB.Close()
 	parseFlags()     //Command Line Arguments
 	r := getRoutes() //create routes
-	c := cors.New(cors.Options{ // allow requests from localhost for local development
-		AllowedOrigins: []string{"http://localhost:*"},
-	})
 
 	log.Println("Starting Jimmy Server")
-	http.ListenAndServe(":3000", c.Handler(r))
+	http.ListenAndServe(":3000", r)
 }
 
 //getRoutes: create server routes
 func getRoutes() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", handlers.Index)
+	//mux.HandleFunc("/", handlers.Index)
+	fs := http.FileServer(http.Dir("jimmify-web"))
+	mux.Handle("/", fs) // serve jimmify-web files
 	mux.HandleFunc("/query", handlers.Query)
 	mux.HandleFunc("/queue", handlers.Queue)
 	mux.HandleFunc("/answer", handlers.Answer)

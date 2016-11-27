@@ -1,0 +1,3 @@
+[submodule "jimmify-web"]
+	path = jimmify-web
+	url = https://github.com/jimmified/jimmify-web
