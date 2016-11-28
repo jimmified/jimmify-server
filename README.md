@@ -1,22 +1,20 @@
 # jimmify-server
 A REST api to talk to jimmy
 
-## Getting Started
+##Getting Started
 
 In order to set up the repo:
 * install go (I'm on 1.7)
-* clone jimmify-server recursively in to your go/src/ folder
 * run ```go get```
 * run ```go install```
-* cd into jimmify-web
-* run ```npm install```
-* run ```grunt build```
 
-Dont have node/npm? Install it [here](https://nodejs.org/en/).
+##Static Site
 
-Don't have grunt installed?
+This module builds the jimmify-web static site as a dependency, and is able to automatically build and serve it. Running ```go get``` will automatically pull the most recent jimmify-web.  
 
-* ```npm install -g grunt-cli```
+You will need [node](https://nodejs.org/en/) installed.
+
+You will also need to install grunt: ```npm install -g grunt-cli```
 
 ##Usage
 
