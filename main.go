@@ -7,24 +7,31 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/jimmified/jimmify-web"
 )
 
 //main: initialize database and start server
 func main() {
 	db.InitDB()
 	defer db.SQLDB.Close()
-	parseFlags()     //Command Line Arguments
-	r := getRoutes() //create routes
+	parseFlags() //Command Line Arguments
+	log.Println("Building Static Site")
+	path, err := jimmifyweb.BuildSite()
+	if err != nil {
+		log.Fatal(err)
+	}
+	r := getRoutes(path) //create routes
 
 	log.Println("Starting Jimmy Server")
 	http.ListenAndServe(":3000", r)
 }
 
 //getRoutes: create server routes
-func getRoutes() *http.ServeMux {
+func getRoutes(path string) *http.ServeMux {
 	mux := http.NewServeMux()
 	//mux.HandleFunc("/", handlers.Index)
-	fs := http.FileServer(http.Dir("jimmify-web"))
+	fs := http.FileServer(http.Dir(path))
 	mux.Handle("/", fs) // serve jimmify-web files
 	mux.HandleFunc("/query", handlers.Query)
 	mux.HandleFunc("/queue", handlers.Queue)
