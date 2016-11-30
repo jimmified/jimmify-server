@@ -30,14 +30,14 @@ func main() {
 //getRoutes: create server routes
 func getRoutes(path string) *http.ServeMux {
 	mux := http.NewServeMux()
-	//mux.HandleFunc("/", handlers.Index)
 	fs := http.FileServer(http.Dir(path))
 	mux.Handle("/", fs) // serve jimmify-web files
-	mux.HandleFunc("/query", handlers.Query)
-	mux.HandleFunc("/queue", handlers.Queue)
-	mux.HandleFunc("/answer", handlers.Answer)
-	mux.HandleFunc("/check", handlers.Check)
-	mux.HandleFunc("/recent", handlers.Recent)
+	mux.HandleFunc("/api", handlers.Index)
+	mux.HandleFunc("/api/query", handlers.Query)
+	mux.HandleFunc("/api/queue", handlers.Queue)
+	mux.HandleFunc("/api/answer", handlers.Answer)
+	mux.HandleFunc("/api/check", handlers.Check)
+	mux.HandleFunc("/api/recent", handlers.Recent)
 	return mux
 }
 
