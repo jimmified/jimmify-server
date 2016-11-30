@@ -5,12 +5,12 @@ A REST api to talk to jimmy
 
 In order to set up the repo:
 * install go (I'm on 1.7)
-* run ```go get```
+* run ```go get -u```
 * run ```go install```
 
 ##Static Site
 
-This module builds the jimmify-web static site as a dependency, and is able to automatically build and serve it. Running ```go get``` will automatically pull the most recent jimmify-web.  
+This module builds the jimmify-web static site as a dependency, and is able to automatically build and serve it. Running ```go get -u``` will automatically pull the most recent jimmify-web.  
 
 You will need [node](https://nodejs.org/en/) installed.
 
