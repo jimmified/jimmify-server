@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-//Check: check if post is answered
+//Check : check if post is answered
 func Check(w http.ResponseWriter, r *http.Request) {
 	var q db.Query
 	response := make(map[string]interface{})
@@ -21,12 +21,15 @@ func Check(w http.ResponseWriter, r *http.Request) {
 	//add query
 	a, err := db.CheckQuery(q.Key)
 	if err != nil {
-		ReturnStatusBadRequest(w, err.Error())
+		//return status false
+		w.WriteHeader(http.StatusOK)
+		response["status"] = "false"
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response["answer"] = a
+	response["answer"] = a.Answer
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)
 }
