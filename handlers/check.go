@@ -24,6 +24,7 @@ func Check(w http.ResponseWriter, r *http.Request) {
 		//return status false
 		w.WriteHeader(http.StatusOK)
 		response["status"] = "false"
+		response["position"] = a.Position
 		json.NewEncoder(w).Encode(response)
 		return
 	}

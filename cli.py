@@ -7,7 +7,7 @@ class API():
 		if remote:
 			self.url = "http://shibboleth.student.rit.edu/"
 		else:
-			self.url = "http://localhost:3000/"
+			self.url = "http://localhost:3000/api/"
 
 	def query(self,text,typ):
 		r = {}

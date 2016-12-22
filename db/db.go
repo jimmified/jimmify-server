@@ -17,10 +17,11 @@ var SQLPath string
 
 //Query type
 type Query struct {
-	Key    int64  `json:"key"`
-	Text   string `json:"text"`
-	Type   string `json:"type"`
-	Answer string `json:"answer"`
+	Key      int64  `json:"key"`
+	Text     string `json:"text"`
+	Type     string `json:"type"`
+	Answer   string `json:"answer"`
+	Position int64  `json:"-"`
 }
 
 //InitDB init sql
@@ -156,13 +157,29 @@ func AnswerQuery(key int64, answer string) error {
 	return nil
 }
 
+//getQueuePosition return the queue position of a query
+func getQueuePosition(key int64) (int64, error) {
+	q := Query{}
+	//select minimum
+	err := SQLDB.QueryRow("SELECT MIN(key) FROM queries").Scan(&q.Key)
+	if err != nil {
+		return 0, errors.New("Minimum not found")
+	}
+	return (key - q.Key), nil
+}
+
 //CheckQuery see if a query is resolved and return the answer
 func CheckQuery(key int64) (Query, error) {
 	q := Query{}
-
 	//select from resolved
 	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Text, &q.Answer)
 	if err != nil {
+		//get position
+		q.Position, err = getQueuePosition(key)
+		if err != nil {
+			//we did not get the position
+			return q, errors.New("Error getting queue position")
+		}
 		return q, errors.New("Query is not resolved")
 	}
 	return q, nil
