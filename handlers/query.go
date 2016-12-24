@@ -18,6 +18,13 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//validate data
+	err = validateQuery(q)
+	if err != nil {
+		ReturnStatusBadRequest(w, err.Error())
+		return
+	}
+
 	//add query
 	key, err := db.AddQuery(q)
 	if err != nil {

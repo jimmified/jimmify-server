@@ -63,13 +63,13 @@ func CreateTables() {
 	CREATE TABLE queries (
 		key integer primary key autoincrement,
 		text varchar(255) not null,
-		type varchar(60) not null
+		type varchar(20) not null
 	);
 	CREATE TABLE resolved (
 		key integer primary key not null,
 		text varchar(255) not null,
-		type varchar(60) not null,
-		answer varchar(500) null
+		type varchar(20) not null,
+		answer varchar(800) null
 	);
 	DELETE from queries;
     DELETE from resolved;
