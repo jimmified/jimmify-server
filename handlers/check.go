@@ -18,7 +18,14 @@ func Check(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//add query
+	//validate data
+	err = validateCheck(q)
+	if err != nil {
+		ReturnStatusBadRequest(w, err.Error())
+		return
+	}
+
+	//check query
 	a, err := db.CheckQuery(q.Key)
 	if err != nil {
 		//return status false

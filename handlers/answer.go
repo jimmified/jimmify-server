@@ -18,6 +18,13 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//validate data
+	err = validateAnswer(q)
+	if err != nil {
+		ReturnStatusBadRequest(w, err.Error())
+		return
+	}
+
 	//add query
 	err = db.AnswerQuery(q.Key, q.Answer)
 	if err != nil {

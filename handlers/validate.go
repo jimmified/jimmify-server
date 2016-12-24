@@ -3,7 +3,6 @@ package handlers
 import (
 	"errors"
 	"jimmify-server/db"
-	"log"
 
 	"github.com/astaxie/beego/validation"
 )
@@ -14,7 +13,6 @@ func validateQuery(q db.Query) error {
 	types := map[string]bool{
 		"search": true,
 	}
-
 	//create rules
 	valid.Required(q.Text, "text")         //require the text field
 	valid.MaxSize(q.Text, 255, "textSize") //verify it is not too long
@@ -22,17 +20,34 @@ func validateQuery(q db.Query) error {
 	valid.MaxSize(q.Type, 20, "typeSize")  //verify it is not too long
 	valid.Alpha(q.Type, "typeType")        //verify type
 	if valid.HasErrors() {
-		//failed validation
-		for _, err := range valid.Errors {
-			log.Println(err.Key, err.Message)
-		}
-		return errors.New("Invalid Query")
+		return errors.New("Invalid Query") //failed validation
 	}
-
 	//check for allowed type
 	if !types[q.Type] {
 		return errors.New("Unknown Type")
 	}
+	return nil
+}
 
+//validateAnswer check for valid answer
+func validateAnswer(q db.Query) error {
+	valid := validation.Validation{}
+	//create rules
+	valid.Required(q.Key, "key")
+	valid.MaxSize(q.Answer, 800, "answerSize")
+	if valid.HasErrors() {
+		return errors.New("Invalid Answer") //failed validation
+	}
+	return nil
+}
+
+//validateAnswer check for valid answer
+func validateCheck(q db.Query) error {
+	valid := validation.Validation{}
+	//create rules
+	valid.Required(q.Key, "key")
+	if valid.HasErrors() {
+		return errors.New("No key") //failed validation
+	}
 	return nil
 }
