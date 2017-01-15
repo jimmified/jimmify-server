@@ -65,6 +65,11 @@ func CreateTables() {
 		text varchar(255) not null,
 		type varchar(20) not null
 	);
+	CREATE TABLE premium (
+		key interger primary key autoincrement,
+		text varchar(255) not null,
+		type varchar(20) not null
+	);
 	CREATE TABLE resolved (
 		key integer primary key not null,
 		text varchar(255) not null,
@@ -72,7 +77,8 @@ func CreateTables() {
 		answer varchar(800) null
 	);
 	DELETE from queries;
-    DELETE from resolved;
+  DELETE from resolved;
+	DELETE from premium;
 	`
 	//Create the users table
 	_, err := SQLDB.Exec(createTables)
