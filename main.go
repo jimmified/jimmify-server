@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"jimmify-server/auth"
 	"jimmify-server/db"
 	"jimmify-server/handlers"
 	"log"
@@ -13,8 +14,9 @@ import (
 
 //main: initialize database and start server
 func main() {
-	db.InitDB()
+	db.Init()
 	defer db.SQLDB.Close()
+	auth.Init()
 	parseFlags() //Command Line Arguments
 	log.Println("Building Static Site")
 	path, err := jimmifyweb.BuildSite()
@@ -38,6 +40,7 @@ func getRoutes(path string) *http.ServeMux {
 	mux.HandleFunc("/api/answer", handlers.Answer)
 	mux.HandleFunc("/api/check", handlers.Check)
 	mux.HandleFunc("/api/recent", handlers.Recent)
+	mux.HandleFunc("/api/login", handlers.Login)
 	return mux
 }
 

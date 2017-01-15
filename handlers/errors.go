@@ -23,3 +23,12 @@ func ReturnStatusBadRequest(w http.ResponseWriter, message string) {
 	w.WriteHeader(http.StatusBadRequest)
 	json.NewEncoder(w).Encode(response)
 }
+
+//ReturnUnauthorized returns a Unauthorized Error
+func ReturnUnauthorized(w http.ResponseWriter, message string) {
+	log.Println(message)
+	response := make(map[string]string)
+	response["Status"] = "false"
+	w.WriteHeader(http.StatusUnauthorized)
+	json.NewEncoder(w).Encode(response)
+}

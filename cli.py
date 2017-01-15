@@ -8,6 +8,7 @@ class API():
 			self.url = "http://shibboleth.student.rit.edu/"
 		else:
 			self.url = "http://localhost:3000/api/"
+		self.token = ""
 
 	def query(self,text,typ):
 		r = {}
@@ -42,6 +43,19 @@ class API():
 		data = r.json()
 		print(data)
 
+	def login(self, username, password):
+		r = {}
+		r['username'] = username
+		r['password'] = password
+		r = requests.post(self.url + "login", data=json.dumps(r), verify=False)
+		if r.status_code == requests.codes.ok:
+			data = r.json()
+			print("Login Successful")
+			self.token = data["token"]
+			return True
+		print("Login Failed")
+		return False
+
 if __name__ == '__main__':
 	print("Jimmy CLI Starting.. ")
 	i = input("local or remote? ")
@@ -50,6 +64,11 @@ if __name__ == '__main__':
 	else:
 		remote = False
 	jimmy = API(remote)
+	l = False
+	while(not l):
+		username = input("username> ")
+		password = input("password> ")
+		l = jimmy.login(username, password)
 	#Start REPL
 	print("Use command 'help' for more options.")
 	while True:

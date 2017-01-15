@@ -25,7 +25,7 @@ type Query struct {
 }
 
 //InitDB init sql
-func InitDB() {
+func Init() {
 	var err error
 	var created = false
 	//check for the sqlite file
@@ -54,7 +54,7 @@ func InitDB() {
 func ResetDB() {
 	//remove existing dataBasePath file
 	os.Remove("./db.sqlite")
-	InitDB()
+	Init()
 }
 
 //CreateTables create the user and posts tables

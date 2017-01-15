@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"jimmify-server/auth"
 	"jimmify-server/db"
 
 	"github.com/astaxie/beego/validation"
@@ -48,6 +49,14 @@ func validateCheck(q db.Query) error {
 	valid.Required(q.Key, "key")
 	if valid.HasErrors() {
 		return errors.New("No key") //failed validation
+	}
+	return nil
+}
+
+//validateLogin check login credentials
+func validateLogin(c Credentials) error {
+	if c.Password != auth.JPASS {
+		return errors.New("Invalid Password")
 	}
 	return nil
 }
