@@ -79,9 +79,12 @@ func CreateTables() {
 		type varchar(20) not null,
 		answer varchar(800) null
 	);
+	CREATE TABLE charges (
+		key varchar(255) primary key
+	);
 	DELETE from queries;
   DELETE from resolved;
-	DELETE from premium;
+	DELETE from charges;
 	`
 	//Create the users table
 	_, err := SQLDB.Exec(createTables)
@@ -163,6 +166,28 @@ func AnswerQuery(key int64, answer string) error {
 		return errors.New("Failed to delete query")
 	}
 	tx.Commit()
+	return nil
+}
+
+//AddCharge adds a charge to the database and errors if charge exists
+func AddCharge(key string) error {
+	var c Charge
+	err := SQLDB.QueryRow("SELECT key FROM charges WHERE key=?", key, 1).Scan(&c.ID)
+
+	if err == nil {
+		return errors.New("Charge already exists")
+	}
+
+	insert, err := SQLDB.Prepare("INSERT into charges(key) values(?)")
+	if err != nil {
+		return errors.New("Error creating Charge insert")
+	}
+	//insert
+	_, err = insert.Exec(key)
+	if err != nil {
+		return errors.New("Failed to add Charge")
+	}
+
 	return nil
 }
 

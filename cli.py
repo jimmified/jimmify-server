@@ -67,6 +67,10 @@ if __name__ == '__main__':
 			text = input("query> ")
 			typ = "search"
 			jimmy.query(text, typ)
+		elif i == "charge":
+			charge = input("charge> ")
+			query = int(input("query id> "))
+			jimmy.charge(charge, query)
 		elif i == "queue":
 			jimmy.queue()
 		elif i == "answer":
@@ -79,6 +83,6 @@ if __name__ == '__main__':
 		elif i == "recent":
 			jimmy.recent()
 		elif i == "help":
-			print("Avaliable commands: help, query, queue, answer, check, recent")
+			print("Avaliable commands: help, query, queue, charge, answer, check, recent")
 		elif i == "quit":
 			break
