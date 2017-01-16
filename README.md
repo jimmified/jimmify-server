@@ -35,6 +35,13 @@ I have also built a CLI in python for testing the endpoints. It can be run using
 python3 cli.py
 ```
 
+##Security
+
+Certain portions of the application require keys and passwords that are not committed with the source. They are loaded from the following environment variables:
+
+* JPASS - Password for the server.
+* JKEY - Encryption key for the server.
+
 ##Documentation
 * The API is fully documented in the wiki.
 * Go documentation in Wiki.
