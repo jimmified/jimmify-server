@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"jimmify-server/db"
+	"jimmify-server/firebase"
 	"net/http"
 )
 
@@ -31,6 +32,8 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		ReturnInternalServerError(w, err.Error())
 		return
 	}
+
+	firebase.Push("New Query", q.Text)
 
 	w.WriteHeader(http.StatusOK)
 	response["key"] = key

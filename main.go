@@ -4,6 +4,7 @@ import (
 	"flag"
 	"jimmify-server/auth"
 	"jimmify-server/db"
+	"jimmify-server/firebase"
 	"jimmify-server/handlers"
 	"log"
 	"net/http"
@@ -24,6 +25,8 @@ func main() {
 		log.Fatal(err)
 	}
 	r := getRoutes(path) //create routes
+
+	firebase.Init()
 
 	log.Println("Starting Jimmy Server")
 	http.ListenAndServe(":3000", r)
