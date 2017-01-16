@@ -41,8 +41,8 @@ Certain portions of the application require keys and passwords that are not comm
 
 * JPASS - Password for the server.
 * JKEY - Encryption key for the server.
-* KFBKEY - Firebase server api key.
-* KFBTOPIC - Firebase push topic.
+* JFBKEY - Firebase server api key.
+* JFBTOPIC - Firebase push topic.
 
 ##Documentation
 * The API is fully documented in the wiki.
