@@ -1,44 +1,40 @@
 package firebase
 
 import (
+	"bytes"
 	"fmt"
-	"github.com/NaySoftware/go-fcm"
+	"log"
+	"net/http"
 	"os"
 )
 
+var url string
 var serverKey string
 var topic string
 
 //Init : Sets the firebase key and topic from env vars
 func Init() {
-	serverKey = os.Getenv("JFIREBASEKEY")
-	//topic = os.Getenv("JFIREBASETOPIC")
+	url = "https://fcm.googleapis.com/fcm/send"
+	serverKey = os.Getenv("JFBKEY")
+	if serverKey == "" {
+		log.Fatal("Missing JFBKEY for Firebase Authentication")
+	}
+	topic = os.Getenv("JFBTOPIC")
+	if topic == "" {
+		log.Fatal("Missing JFBTOPIC for Firebase Topic")
+	}
 }
 
 //Push : Sends a push notification using Google Cloud Messaging
-//msg, The message to be sent
-//sum, The title of the notification
-func Push(msg, sum string) {
-	data := map[string]string{
-		"msg": msg,
-		"sum": sum,
-	}
+func Push(title string, body string) {
+	var jsonStr = []byte(fmt.Sprintf(`{"to": "/topics/%s", "notification": {"body": "%s", "title": "%s"}}`, topic, body, title))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	req.Header.Set("Authorization", "key="+serverKey)
+	req.Header.Set("Content-Type", "application/json")
 
-	ids := []string{
-		"dW3SHCVmDsI:APA91bE-MXR-ynBpoR-CeWUrWoinA_WZE9_WjEzrgxKewlEF2r_noo840EkR-XkkoCB0FUcgAS3E96GeIFTiZUoxFVXRaALUOxE-6hLVdpS_h6HOBjfwpnwtTToLG3uRQ3HX9JAWxOB-",
-	}
-
-	c := fcm.NewFcmClient(serverKey)
-	//c.NewFcmMsgTo(topic, data)
-	c.NewFcmRegIdsMsg(ids, data)
-	status, err := c.Send()
-
-	fmt.Println(serverKey)
-	fmt.Println(topic)
-
-	if err == nil {
-		status.PrintResults()
-	} else {
-		fmt.Println(err)
+	client := &http.Client{}
+	_, err = client.Do(req)
+	if err != nil {
+		log.Println("Push failed")
 	}
 }

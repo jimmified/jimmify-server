@@ -2,13 +2,14 @@ package main
 
 import (
 	"flag"
-	"github.com/jimmified/jimmify-web"
 	"jimmify-server/db"
 	"jimmify-server/firebase"
 	"jimmify-server/handlers"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/jimmified/jimmify-web"
 )
 
 //main: initialize database and start server
@@ -23,9 +24,7 @@ func main() {
 	}
 	r := getRoutes(path) //create routes
 
-	log.Println("Sending push notification")
 	firebase.Init()
-	firebase.Push("Jamees is #1", "Hey Nerd")
 
 	log.Println("Starting Jimmy Server")
 	http.ListenAndServe(":3000", r)
