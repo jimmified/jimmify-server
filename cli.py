@@ -27,6 +27,8 @@ class API():
 		r = {}
 		r['key'] = key
 		r['answer'] = answer
+		r['token'] = self.token
+		print(r)
 		r = requests.post(self.url + "answer", data=json.dumps(r), verify=False)
 		data = r.json()
 		print(data)

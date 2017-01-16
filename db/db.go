@@ -22,6 +22,7 @@ type Query struct {
 	Type     string `json:"type"`
 	Answer   string `json:"answer"`
 	Position int64  `json:"-"`
+	Token    string `json:"token"`
 }
 
 //InitDB init sql

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"jimmify-server/auth"
 	"jimmify-server/db"
 	"net/http"
 )
@@ -15,6 +16,13 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&q)
 	if err != nil {
 		ReturnStatusBadRequest(w, "Failed to decode query json")
+		return
+	}
+
+	//check token
+	err = auth.CheckToken(q.Token)
+	if err != nil {
+		ReturnUnauthorized(w, err.Error())
 		return
 	}
 

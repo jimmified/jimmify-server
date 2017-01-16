@@ -42,7 +42,7 @@ func CheckToken(tokenString string) error {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return JKEY, nil
+		return []byte(JKEY), nil
 	})
 
 	if token.Valid {
