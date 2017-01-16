@@ -30,11 +30,11 @@ func Init() {
 }
 
 //CheckToken verfies a token
-func CheckToken(tokenString string) error {
+func CheckToken(tokenString string) (string, error) {
 	//check for valid jwt syntax
 	match, _ := regexp.MatchString("\\w+\\.\\w+\\.\\w+", tokenString)
 	if match != true {
-		return errors.New("Invalid Token")
+		return "", errors.New("Invalid Token")
 	}
 
 	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -46,14 +46,14 @@ func CheckToken(tokenString string) error {
 	})
 
 	if token.Valid {
-		return nil
+		claims := token.Claims.(jwt.MapClaims)
+		return claims["user"].(string), nil
 	}
-
-	return errors.New("Invalid Token")
+	return "", errors.New("Invalid Token")
 }
 
 //CreateToken genreate a new token
-func CreateToken(username string, password string) (string, error) {
+func CreateToken(username string) (string, error) {
 
 	// Create the short-term token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

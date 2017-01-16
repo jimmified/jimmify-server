@@ -32,7 +32,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//create token
-	token, err := auth.CreateToken(c.Username, c.Password)
+	token, err := auth.CreateToken(c.Username)
 	if err != nil {
 		ReturnInternalServerError(w, err.Error())
 		return

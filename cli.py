@@ -58,6 +58,18 @@ class API():
 		print("Login Failed")
 		return False
 
+	def renew(self):
+		r = {}
+		r['token'] = self.token
+		r = requests.post(self.url + "renew", data=json.dumps(r), verify=False)
+		if r.status_code == requests.codes.ok:
+			data = r.json()
+			print("Renew Successful")
+			self.token = data["token"]
+			return
+		print("Renew Failed")
+		return False
+
 if __name__ == '__main__':
 	print("Jimmy CLI Starting.. ")
 	i = input("local or remote? ")
@@ -90,6 +102,8 @@ if __name__ == '__main__':
 			jimmy.check(key)
 		elif i == "recent":
 			jimmy.recent()
+		elif i == "renew":
+			jimmy.renew()
 		elif i == "help":
 			print("Avaliable commands: help, query, queue, answer, check, recent")
 		elif i == "quit":

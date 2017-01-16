@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-//Answer: let jimmy answer queries
-func Answer(w http.ResponseWriter, r *http.Request) {
+//Check : check if post is answered
+func Renew(w http.ResponseWriter, r *http.Request) {
 	var q db.Query
 	response := make(map[string]interface{})
 
@@ -20,27 +20,21 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//check token
-	_, err = auth.CheckToken(q.Token)
+	user, err := auth.CheckToken(q.Token)
 	if err != nil {
 		ReturnUnauthorized(w, err.Error())
 		return
 	}
 
-	//validate data
-	err = validateAnswer(q)
-	if err != nil {
-		ReturnStatusBadRequest(w, err.Error())
-		return
-	}
-
-	//add query
-	err = db.AnswerQuery(q.Key, q.Answer)
+	//create token
+	token, err := auth.CreateToken(user)
 	if err != nil {
 		ReturnInternalServerError(w, err.Error())
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
+	response["token"] = token
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)
 }
