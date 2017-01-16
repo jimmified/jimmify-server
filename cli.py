@@ -17,6 +17,15 @@ class API():
 		data = r.json()
 		print(data)
 
+	def charge(self, charge, query):
+		r = {}
+		r['charge'] = charge
+		r['query'] = query
+		r = requests.post(self.url + "charge", data=json.dumps(r),
+		verify=False)
+		data = r.json()
+		print(data)
+
 	def queue(self):
 		r = requests.get(self.url + "queue", verify=False)
 		data = r.json()

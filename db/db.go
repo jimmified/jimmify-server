@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"time"
 	//driver for sqlite
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -22,6 +23,12 @@ type Query struct {
 	Type     string `json:"type"`
 	Answer   string `json:"answer"`
 	Position int64  `json:"-"`
+}
+
+//Charge type
+type Charge struct {
+	ID    string `json:"charge"`
+	Query int64  `json:"query"`
 }
 
 //InitDB init sql
@@ -63,12 +70,8 @@ func CreateTables() {
 	CREATE TABLE queries (
 		key integer primary key autoincrement,
 		text varchar(255) not null,
-		type varchar(20) not null
-	);
-	CREATE TABLE premium (
-		key interger primary key autoincrement,
-		text varchar(255) not null,
-		type varchar(20) not null
+		type varchar(20) not null,
+		priority timestamp
 	);
 	CREATE TABLE resolved (
 		key integer primary key not null,
@@ -111,7 +114,7 @@ func GetQueue(num int) ([]Query, error) {
 	queries := []Query{}
 	q := Query{}
 	//create sql query
-	rows, err := SQLDB.Query("SELECT key,text,type FROM queries LIMIT (?)", num)
+	rows, err := SQLDB.Query("SELECT key,text,type FROM queries ORDER BY datetime(priority) DESC LIMIT (?)", num)
 	defer rows.Close() //close query connection when function returns
 	if err != nil {
 		return queries, errors.New("Error getting queue")
@@ -160,6 +163,23 @@ func AnswerQuery(key int64, answer string) error {
 		return errors.New("Failed to delete query")
 	}
 	tx.Commit()
+	return nil
+}
+
+//MoveToFront moves a query to the front of the queue
+func MoveToFront(key int64) error {
+	update, err := SQLDB.Prepare("UPDATE queries SET priority=? WHERE key=?")
+	if err != nil {
+		return err
+	}
+
+	timestamp := time.Now()
+	_, err = update.Exec(timestamp, key)
+
+	if err != nil {
+		return errors.New("Failed to move query to the pront of the queue")
+	}
+
 	return nil
 }
 

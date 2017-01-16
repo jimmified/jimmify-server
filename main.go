@@ -38,6 +38,7 @@ func getRoutes(path string) *http.ServeMux {
 	mux.HandleFunc("/api/answer", handlers.Answer)
 	mux.HandleFunc("/api/check", handlers.Check)
 	mux.HandleFunc("/api/recent", handlers.Recent)
+	mux.HandleFunc("/api/charge", handlers.Charge)
 	return mux
 }
 
