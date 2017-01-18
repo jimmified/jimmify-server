@@ -33,7 +33,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	firebase.Push("New Query", q.Text)
+	firebase.Push("Jimmy Query", q.Text)
 
 	w.WriteHeader(http.StatusOK)
 	response["key"] = key

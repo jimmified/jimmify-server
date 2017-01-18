@@ -27,7 +27,7 @@ func Init() {
 
 //Push : Sends a push notification using Google Cloud Messaging
 func Push(title string, body string) {
-	var jsonStr = []byte(fmt.Sprintf(`{"to": "/topics/%s", "notification": {"body": "%s", "title": "%s"}}`, topic, body, title))
+	var jsonStr = []byte(fmt.Sprintf(`{"to": "/topics/%s", "priority" : "high", "notification": {"body": "%s", "icon" : "ic_notify", "tag":"JIMMY", "title": "%s"}}`, topic, body, title))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("Authorization", "key="+serverKey)
 	req.Header.Set("Content-Type", "application/json")
