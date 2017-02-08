@@ -18,6 +18,13 @@ class API():
 		data = r.json()
 		print(data)
 
+	def question(self,key):
+		r = {}
+		r['key'] = key
+		r = requests.post(self.url + "question", data=json.dumps(r), verify=False)
+		data = r.json()
+		print(data)
+
 	def queue(self):
 		r = requests.get(self.url + "queue", verify=False)
 		data = r.json()
@@ -91,6 +98,9 @@ if __name__ == '__main__':
 			text = input("query> ")
 			typ = "search"
 			jimmy.query(text, typ)
+		elif i == "question":
+			key = int(input("key> "))
+			jimmy.question(key)
 		elif i == "queue":
 			jimmy.queue()
 		elif i == "answer":
@@ -105,6 +115,6 @@ if __name__ == '__main__':
 		elif i == "renew":
 			jimmy.renew()
 		elif i == "help":
-			print("Avaliable commands: help, query, queue, answer, check, recent")
+			print("Avaliable commands: help, query, question, queue, answer, check, recent")
 		elif i == "quit":
 			break

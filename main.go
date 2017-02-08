@@ -39,6 +39,7 @@ func getRoutes(path string) *http.ServeMux {
 	mux.Handle("/", fs) // serve jimmify-web files
 	mux.HandleFunc("/api", handlers.Index)
 	mux.HandleFunc("/api/query", handlers.Query)
+	mux.HandleFunc("/api/question", handlers.Question)
 	mux.HandleFunc("/api/queue", handlers.Queue)
 	mux.HandleFunc("/api/answer", handlers.Answer)
 	mux.HandleFunc("/api/check", handlers.Check)

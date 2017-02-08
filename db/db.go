@@ -206,3 +206,15 @@ func GetRecent(num int) ([]Query, error) {
 
 	return resolved, nil
 }
+
+//GetQuestion get a question by query id
+func GetQuestion(key int64) (Query, error) {
+	q := Query{}
+	//get the query
+	err := SQLDB.QueryRow("SELECT key,text,type FROM queries WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type)
+	if err != nil {
+		//the query is not in the table
+		return q, errors.New("Could not find question")
+	}
+	return q, nil
+}
