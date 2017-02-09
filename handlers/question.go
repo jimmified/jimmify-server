@@ -28,8 +28,6 @@ func Question(w http.ResponseWriter, r *http.Request) {
     log.Println(q.Key)
     //get question
     a, err := db.GetQuestion(q.Key)
-    log.Println(a)
-    log.Println(err)
     if err != nil {
         //return status false
         w.WriteHeader(http.StatusOK)
