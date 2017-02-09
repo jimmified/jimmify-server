@@ -173,7 +173,7 @@ func getQueuePosition(key int64) (int64, error) {
 func CheckQuery(key int64) (Query, error) {
 	q := Query{}
 	//select from resolved
-	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Text, &q.Answer)
+	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type, &q.Answer)
 	if err != nil {
 		//get position
 		q.Position, err = getQueuePosition(key)
