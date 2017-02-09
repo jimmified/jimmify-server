@@ -4,7 +4,6 @@ import (
     "encoding/json"
     "jimmify-server/db"
     "net/http"
-    "log"
 )
 
 //Question : get question by query id
@@ -25,7 +24,6 @@ func Question(w http.ResponseWriter, r *http.Request) {
         ReturnStatusBadRequest(w, err.Error())
         return
     }
-    log.Println(q.Key)
     //get question
     a, err := db.GetQuestion(q.Key)
     if err != nil {
