@@ -213,8 +213,12 @@ func GetQuestion(key int64) (Query, error) {
 	//get the query
 	err := SQLDB.QueryRow("SELECT key,text,type FROM queries WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type)
 	if err != nil {
-		//the query is not in the table
-		return q, errors.New("Could not find question")
+		//not found in queries table so check resolved table
+		err := SQLDB.QueryRow("SELECT key,text,type FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type)
+		if err != nil {
+			//the query is not in either table
+			return q, errors.New("Could not find question")
+		}
 	}
 	return q, nil
 }
