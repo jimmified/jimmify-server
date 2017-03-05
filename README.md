@@ -28,12 +28,22 @@ jimmify-server
 The server has two command line options:
 * -resetdb - clears and sets up the SQL database.
 * -log - turns on file logging
+* -nopush - stops sending notifications during development.
 
 I have also built a CLI in python for testing the endpoints. It can be run using
 
 ```bash
 python3 cli.py
 ```
+
+##Security
+
+Certain portions of the application require keys and passwords that are not committed with the source. They are loaded from the following environment variables:
+
+* JPASS - Password for the server.
+* JKEY - Encryption key for the server.
+* JFBKEY - Firebase server api key.
+* JFBTOPIC - Firebase push topic.
 
 ##Documentation
 * The API is fully documented in the wiki.

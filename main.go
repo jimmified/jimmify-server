@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"jimmify-server/auth"
 	"jimmify-server/db"
+	"jimmify-server/firebase"
 	"jimmify-server/handlers"
 	"log"
 	"net/http"
@@ -13,8 +15,9 @@ import (
 
 //main: initialize database and start server
 func main() {
-	db.InitDB()
+	db.Init()
 	defer db.SQLDB.Close()
+	auth.Init()
 	parseFlags() //Command Line Arguments
 	log.Println("Building Static Site")
 	path, err := jimmifyweb.BuildSite()
@@ -22,6 +25,8 @@ func main() {
 		log.Fatal(err)
 	}
 	r := getRoutes(path) //create routes
+
+	firebase.Init()
 
 	log.Println("Starting Jimmy Server")
 	http.ListenAndServe(":3000", r)
@@ -34,11 +39,17 @@ func getRoutes(path string) *http.ServeMux {
 	mux.Handle("/", fs) // serve jimmify-web files
 	mux.HandleFunc("/api", handlers.Index)
 	mux.HandleFunc("/api/query", handlers.Query)
+	mux.HandleFunc("/api/question", handlers.Question)
 	mux.HandleFunc("/api/queue", handlers.Queue)
 	mux.HandleFunc("/api/answer", handlers.Answer)
 	mux.HandleFunc("/api/check", handlers.Check)
 	mux.HandleFunc("/api/recent", handlers.Recent)
+<<<<<<< HEAD
 	mux.HandleFunc("/api/charge", handlers.Charge)
+=======
+	mux.HandleFunc("/api/login", handlers.Login)
+	mux.HandleFunc("/api/renew", handlers.Renew)
+>>>>>>> 967a7d43ccf832a3ba7926eec411651d78dca7ad
 	return mux
 }
 
@@ -46,6 +57,7 @@ func getRoutes(path string) *http.ServeMux {
 func parseFlags() {
 	//create flag pointers
 	logPtr := flag.Bool("log", false, "Contols writing to log file.")
+	pushPtr := flag.Bool("nopush", false, "Contols whether push notifications are sent.")
 	resetPtr := flag.Bool("resetdb", false, "Whether to reset the database.")
 	flag.Parse() //parse flags
 	//Handle flags
@@ -60,5 +72,10 @@ func parseFlags() {
 			log.Fatal("Error opening logging file")
 		}
 		log.SetOutput(f) //set logging to write to file
+	}
+	if *pushPtr == true {
+		handlers.PushEnabled = false
+	} else {
+		handlers.PushEnabled = true
 	}
 }

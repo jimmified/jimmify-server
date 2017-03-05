@@ -23,6 +23,7 @@ type Query struct {
 	Type     string `json:"type"`
 	Answer   string `json:"answer"`
 	Position int64  `json:"-"`
+	Token    string `json:"token"`
 }
 
 //Charge type
@@ -32,7 +33,7 @@ type Charge struct {
 }
 
 //InitDB init sql
-func InitDB() {
+func Init() {
 	var err error
 	var created = false
 	//check for the sqlite file
@@ -61,7 +62,7 @@ func InitDB() {
 func ResetDB() {
 	//remove existing dataBasePath file
 	os.Remove("./db.sqlite")
-	InitDB()
+	Init()
 }
 
 //CreateTables create the user and posts tables
@@ -223,7 +224,7 @@ func getQueuePosition(key int64) (int64, error) {
 func CheckQuery(key int64) (Query, error) {
 	q := Query{}
 	//select from resolved
-	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Text, &q.Answer)
+	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type, &q.Answer)
 	if err != nil {
 		//get position
 		q.Position, err = getQueuePosition(key)
@@ -255,4 +256,20 @@ func GetRecent(num int) ([]Query, error) {
 	}
 
 	return resolved, nil
+}
+
+//GetQuestion get a question by query id
+func GetQuestion(key int64) (Query, error) {
+	q := Query{}
+	//get the query
+	err := SQLDB.QueryRow("SELECT key,text,type FROM queries WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type)
+	if err != nil {
+		//not found in queries table so check resolved table
+		err := SQLDB.QueryRow("SELECT key,text,type FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type)
+		if err != nil {
+			//the query is not in either table
+			return q, errors.New("Could not find question")
+		}
+	}
+	return q, nil
 }

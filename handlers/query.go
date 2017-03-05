@@ -3,8 +3,12 @@ package handlers
 import (
 	"encoding/json"
 	"jimmify-server/db"
+	"jimmify-server/firebase"
 	"net/http"
 )
+
+//PushEnabled whether or not to send push
+var PushEnabled bool
 
 //Query: submit a query
 func Query(w http.ResponseWriter, r *http.Request) {
@@ -30,6 +34,10 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ReturnInternalServerError(w, err.Error())
 		return
+	}
+
+	if PushEnabled == true {
+		firebase.Push("Jimmy Query", q.Text)
 	}
 
 	w.WriteHeader(http.StatusOK)

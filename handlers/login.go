@@ -3,44 +3,43 @@ package handlers
 import (
 	"encoding/json"
 	"jimmify-server/auth"
-	"jimmify-server/db"
 	"net/http"
 )
 
-//Answer: let jimmy answer queries
-func Answer(w http.ResponseWriter, r *http.Request) {
-	var q db.Query
+//Password type
+type Credentials struct {
+	Username string
+	Password string
+}
+
+//Login login a user
+func Login(w http.ResponseWriter, r *http.Request) {
+	var c Credentials
 	response := make(map[string]interface{})
 
 	//read json
-	err := json.NewDecoder(r.Body).Decode(&q)
+	err := json.NewDecoder(r.Body).Decode(&c)
 	if err != nil {
 		ReturnStatusBadRequest(w, "Failed to decode query json")
 		return
 	}
 
-	//check token
-	_, err = auth.CheckToken(q.Token)
+	//validate data
+	err = validateLogin(c)
 	if err != nil {
 		ReturnUnauthorized(w, err.Error())
 		return
 	}
 
-	//validate data
-	err = validateAnswer(q)
-	if err != nil {
-		ReturnStatusBadRequest(w, err.Error())
-		return
-	}
-
-	//add query
-	err = db.AnswerQuery(q.Key, q.Answer)
+	//create token
+	token, err := auth.CreateToken(c.Username)
 	if err != nil {
 		ReturnInternalServerError(w, err.Error())
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
+	response["token"] = token
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)
 }
