@@ -18,19 +18,19 @@ class API():
 		data = r.json()
 		print(data)
 
-<<<<<<< HEAD
 	def charge(self, charge, query):
 		r = {}
 		r['charge'] = charge
 		r['query'] = query
 		r = requests.post(self.url + "charge", data=json.dumps(r),
 		verify=False)
-=======
+		data = r.json()
+		print(data)
+
 	def question(self,key):
 		r = {}
 		r['key'] = key
 		r = requests.post(self.url + "question", data=json.dumps(r), verify=False)
->>>>>>> 967a7d43ccf832a3ba7926eec411651d78dca7ad
 		data = r.json()
 		print(data)
 
@@ -107,16 +107,13 @@ if __name__ == '__main__':
 			text = input("query> ")
 			typ = "search"
 			jimmy.query(text, typ)
-<<<<<<< HEAD
 		elif i == "charge":
 			charge = input("charge> ")
 			query = int(input("query id> "))
 			jimmy.charge(charge, query)
-=======
 		elif i == "question":
 			key = int(input("key> "))
 			jimmy.question(key)
->>>>>>> 967a7d43ccf832a3ba7926eec411651d78dca7ad
 		elif i == "queue":
 			jimmy.queue()
 		elif i == "answer":
@@ -131,10 +128,6 @@ if __name__ == '__main__':
 		elif i == "renew":
 			jimmy.renew()
 		elif i == "help":
-<<<<<<< HEAD
-			print("Avaliable commands: help, query, queue, charge, answer, check, recent")
-=======
-			print("Avaliable commands: help, query, question, queue, answer, check, recent")
->>>>>>> 967a7d43ccf832a3ba7926eec411651d78dca7ad
+			print("Avaliable commands: help, query, question, queue, answer, check, recent, charge")
 		elif i == "quit":
 			break
