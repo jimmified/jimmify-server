@@ -7,6 +7,9 @@ import (
 	"net/http"
 )
 
+//PushEnabled whether or not to send push
+var PushEnabled bool
+
 //Query: submit a query
 func Query(w http.ResponseWriter, r *http.Request) {
 	var q db.Query
@@ -33,7 +36,9 @@ func Query(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	firebase.Push("Jimmy Query", q.Text)
+	if PushEnabled == true {
+		firebase.Push("Jimmy Query", q.Text)
+	}
 
 	w.WriteHeader(http.StatusOK)
 	response["key"] = key

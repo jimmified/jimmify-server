@@ -28,6 +28,7 @@ jimmify-server
 The server has two command line options:
 * -resetdb - clears and sets up the SQL database.
 * -log - turns on file logging
+* -nopush - stops sending notifications during development.
 
 I have also built a CLI in python for testing the endpoints. It can be run using
 

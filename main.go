@@ -53,6 +53,7 @@ func getRoutes(path string) *http.ServeMux {
 func parseFlags() {
 	//create flag pointers
 	logPtr := flag.Bool("log", false, "Contols writing to log file.")
+	pushPtr := flag.Bool("nopush", false, "Contols whether push notifications are sent.")
 	resetPtr := flag.Bool("resetdb", false, "Whether to reset the database.")
 	flag.Parse() //parse flags
 	//Handle flags
@@ -67,5 +68,10 @@ func parseFlags() {
 			log.Fatal("Error opening logging file")
 		}
 		log.SetOutput(f) //set logging to write to file
+	}
+	if *pushPtr == true {
+		handlers.PushEnabled = false
+	} else {
+		handlers.PushEnabled = true
 	}
 }
