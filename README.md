@@ -44,6 +44,7 @@ Certain portions of the application require keys and passwords that are not comm
 * JKEY - Encryption key for the server.
 * JFBKEY - Firebase server api key.
 * JFBTOPIC - Firebase push topic.
+* JSTRIPEKEY - Stripe secret key.
 
 ##Documentation
 * The API is fully documented in the wiki.
