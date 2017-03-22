@@ -42,6 +42,16 @@ func validateAnswer(q db.Query) error {
 	return nil
 }
 
+func validateCharge(c db.Charge) error {
+	valid := validation.Validation{}
+	valid.Required(c.ID, "charge")
+	valid.Required(c.Query, "query")
+	if valid.HasErrors() {
+		return errors.New("Invalid Answer") //failed validation
+	}
+	return nil
+}
+
 //validateAnswer check for valid answer
 func validateCheck(q db.Query) error {
 	valid := validation.Validation{}

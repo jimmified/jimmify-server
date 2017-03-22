@@ -18,6 +18,15 @@ class API():
 		data = r.json()
 		print(data)
 
+	def charge(self, charge, query):
+		r = {}
+		r['charge'] = charge
+		r['query'] = query
+		r = requests.post(self.url + "charge", data=json.dumps(r),
+		verify=False)
+		data = r.json()
+		print(data)
+
 	def question(self,key):
 		r = {}
 		r['key'] = key
@@ -98,6 +107,10 @@ if __name__ == '__main__':
 			text = input("query> ")
 			typ = "search"
 			jimmy.query(text, typ)
+		elif i == "charge":
+			charge = input("charge> ")
+			query = int(input("query id> "))
+			jimmy.charge(charge, query)
 		elif i == "question":
 			key = int(input("key> "))
 			jimmy.question(key)
@@ -115,6 +128,6 @@ if __name__ == '__main__':
 		elif i == "renew":
 			jimmy.renew()
 		elif i == "help":
-			print("Avaliable commands: help, query, question, queue, answer, check, recent")
+			print("Avaliable commands: help, query, question, queue, answer, check, recent, charge")
 		elif i == "quit":
 			break
