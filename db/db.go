@@ -18,12 +18,13 @@ var SQLPath string
 
 //Query type
 type Query struct {
-	Key      int64  `json:"key"`
-	Text     string `json:"text"`
-	Type     string `json:"type"`
-	Answer   string `json:"answer"`
-	Position int64  `json:"-"`
-	Token    string `json:"token"`
+	Key      int64     `json:"key"`
+	Text     string    `json:"text"`
+	Type     string    `json:"type"`
+	Answer   string    `json:"answer"`
+	Position int64     `json:"-"`
+	Token    string    `json:"token"`
+	Priority time.Time `json:"priority"`
 }
 
 //Charge type
@@ -99,12 +100,12 @@ func CreateTables() {
 //AddQuery add a new query to the db
 func AddQuery(q Query) (int64, error) {
 	//prepare the insert statement for adding a user
-	insert, err := SQLDB.Prepare("INSERT into queries(text, type) values(?, ?)")
+	insert, err := SQLDB.Prepare("INSERT into queries(text, type, priority) values(?, ?, ?)")
 	if err != nil {
 		return 0, errors.New("Error creating Query insert")
 	}
 	//insert
-	result, err := insert.Exec(q.Text, q.Type)
+	result, err := insert.Exec(q.Text, q.Type, nil)
 	if err != nil {
 		return 0, errors.New("Failed to add Query")
 	}
@@ -201,6 +202,7 @@ func MoveToFront(key int64) error {
 
 	timestamp := time.Now()
 	_, err = update.Exec(timestamp, key)
+	log.Println(timestamp)
 
 	if err != nil {
 		return errors.New("Failed to move query to the pront of the queue")
@@ -211,20 +213,32 @@ func MoveToFront(key int64) error {
 
 //getQueuePosition return the queue position of a query
 func getQueuePosition(key int64) (int64, error) {
-	q := Query{}
-	//select minimum
-	err := SQLDB.QueryRow("SELECT MIN(key) FROM queries").Scan(&q.Key)
-	if err != nil {
-		return 0, errors.New("Minimum not found")
+	var err error
+	var count int64
+	var priority sql.NullString
+
+	SQLDB.QueryRow("SELECT priority FROM queries WHERE key = (?)", key).Scan(&priority)
+
+	if priority.Valid {
+		// This is a paid query and can be compared as such
+		err = SQLDB.QueryRow("SELECT COUNT(1) FROM queries WHERE datetime(priority) > datetime((?))", priority).Scan(&count)
+	} else {
+		// This is an unpaid query and need to be
+		err = SQLDB.QueryRow("SELECT COUNT(1) FROM queries WHERE priority IS NOT NULL OR key < (?)", key).Scan(&count)
 	}
-	return (key - q.Key), nil
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return count, nil
 }
 
 //CheckQuery see if a query is resolved and return the answer
 func CheckQuery(key int64) (Query, error) {
 	q := Query{}
 	//select from resolved
-	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type, &q.Answer)
+	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type, &q.Answer, &q.Priority)
 	if err != nil {
 		//get position
 		q.Position, err = getQueuePosition(key)
