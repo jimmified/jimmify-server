@@ -39,10 +39,11 @@ class API():
 		data = r.json()
 		print(data)
 
-	def answer(self, key, answer):
+	def answer(self, key, answer, links):
 		r = {}
 		r['key'] = key
 		r['answer'] = answer
+		r['links'] = links
 		r['token'] = self.token
 		print(r)
 		r = requests.post(self.url + "answer", data=json.dumps(r), verify=False)
@@ -119,7 +120,12 @@ if __name__ == '__main__':
 		elif i == "answer":
 			key = int(input("key> "))
 			answer = input("answer> ")
-			jimmy.answer(key, answer)
+			links = []
+			while (input("add a link? (y/n)> ").lower() == "y"):
+				link = input("url> ")
+				if len(link) > 0:
+					links.append(link)
+			jimmy.answer(key, answer, links)
 		elif i == "check":
 			key = int(input("key> "))
 			jimmy.check(key)
