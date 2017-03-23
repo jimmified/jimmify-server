@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"jimmify-server/db"
 	"net/http"
+	"strings"
 )
 
 //Check : check if post is answered
@@ -38,6 +39,7 @@ func Check(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response["answer"] = a.Answer
+	response["links"] = strings.Split(a.LinkStr, "||")
 	response["text"] = a.Text
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)
