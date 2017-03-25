@@ -1,12 +1,14 @@
 package stripe
 
 import (
-	"github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/charge"
 	"jimmify-server/db"
+	"jimmify-server/firebase"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/stripe/stripe-go"
+	"github.com/stripe/stripe-go/charge"
 )
 
 func init() {
@@ -35,5 +37,6 @@ func PrioritizeQuestion(token string, qkey string) error {
 	}
 
 	err = db.MoveToFront(i)
+	firebase.Push("Jimmy Payment", "Dolla Dolla Bill Ya'll")
 	return err
 }

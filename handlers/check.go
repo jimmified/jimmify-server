@@ -38,6 +38,7 @@ func Check(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response["answer"] = a.Answer
+	response["list"] = a.List
 	response["text"] = a.Text
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)

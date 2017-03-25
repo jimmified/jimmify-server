@@ -39,10 +39,12 @@ class API():
 		data = r.json()
 		print(data)
 
-	def answer(self, key, answer):
+	def answer(self, key, answer, l):
 		r = {}
 		r['key'] = key
 		r['answer'] = answer
+		r['list'] = l
+		r['type'] = "search"
 		r['token'] = self.token
 		print(r)
 		r = requests.post(self.url + "answer", data=json.dumps(r), verify=False)
@@ -70,6 +72,7 @@ class API():
 			data = r.json()
 			print("Login Successful")
 			self.token = data["token"]
+			print(self.token)
 			return True
 		print("Login Failed")
 		return False
@@ -119,7 +122,12 @@ if __name__ == '__main__':
 		elif i == "answer":
 			key = int(input("key> "))
 			answer = input("answer> ")
-			jimmy.answer(key, answer)
+			l = []
+			while (input("add a list? (y/n)> ").lower() == "y"):
+				e = input("element> ")
+				if len(e) > 0:
+					l.append(e)
+			jimmy.answer(key, answer, l)
 		elif i == "check":
 			key = int(input("key> "))
 			jimmy.check(key)
