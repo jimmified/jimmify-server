@@ -1,14 +1,12 @@
 package stripe
 
 import (
+	"github.com/stripe/stripe-go"
+	"github.com/stripe/stripe-go/charge"
 	"jimmify-server/db"
 	"jimmify-server/firebase"
 	"log"
 	"os"
-	"strconv"
-
-	"github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/charge"
 )
 
 func init() {
@@ -16,7 +14,7 @@ func init() {
 }
 
 //PrioritizeQuestion prioritizes ?
-func PrioritizeQuestion(token string, qkey string) error {
+func PrioritizeQuestion(token string, qkey int64) error {
 	// Charge the user's card:
 	params := &stripe.ChargeParams{
 		Amount:   100,
@@ -31,12 +29,10 @@ func PrioritizeQuestion(token string, qkey string) error {
 	}
 	log.Println(charge)
 
-	i, err := strconv.ParseInt(qkey, 10, 64)
+	err = db.MoveToFront(qkey)
 	if err != nil {
 		return err
 	}
-
-	err = db.MoveToFront(i)
 	firebase.Push("Jimmy Payment", "Dolla Dolla Bill Ya'll")
 	return err
 }
