@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"jimmify-server/auth"
 	"jimmify-server/db"
-	"net/http"
-	"strings"
 	"math/rand"
+	"net/http"
 )
 
 //Answer: let jimmy answer queries
@@ -35,16 +34,11 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check if links were provided with the response.
-	linkStr := ""
-	if q.Links != nil && len(q.Links) > 0 {
-		linkStr = strings.Join(q.Links, "||")
-	} else {
-		linkStr = RandomLink()
-	}
+	// check if list was provided
+	linkStr, err := json.Marshal(q.List)
 
 	//add query
-	err = db.AnswerQuery(q.Key, q.Answer, linkStr)
+	err = db.AnswerQuery(q.Key, q.Answer, string(linkStr))
 	if err != nil {
 		ReturnInternalServerError(w, err.Error())
 		return
@@ -55,7 +49,7 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func RandomLink() (string) {
+func RandomLink() string {
 	var links [3]string
 	links[0] = "https://www.youtube.com/watch?v=VxTQKxyJyxw"
 	links[1] = "https://media.giphy.com/media/B6sl8C4moPBGo/giphy.gif"

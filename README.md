@@ -1,14 +1,14 @@
 # jimmify-server
 A REST api to talk to jimmy
 
-##Getting Started
+## Getting Started
 
 In order to set up the repo:
 * install go (I'm on 1.7)
 * run ```go get -u```
 * run ```go install```
 
-##Static Site
+## Static Site
 
 This module builds the jimmify-web static site as a dependency, and is able to automatically build and serve it. Running ```go get -u``` will automatically pull the most recent jimmify-web.  
 
@@ -16,7 +16,7 @@ You will need [node](https://nodejs.org/en/) installed.
 
 You will also need to install grunt: ```npm install -g grunt-cli```
 
-##Usage
+## Usage
 
 This server is built in Go and uses SQLite. In order to build and run use:
 
@@ -36,7 +36,7 @@ I have also built a CLI in python for testing the endpoints. It can be run using
 python3 cli.py
 ```
 
-##Security
+## Security
 
 Certain portions of the application require keys and passwords that are not committed with the source. They are loaded from the following environment variables:
 
@@ -46,6 +46,6 @@ Certain portions of the application require keys and passwords that are not comm
 * JFBTOPIC - Firebase push topic.
 * JSTRIPEKEY - Stripe secret key.
 
-##Documentation
+## Documentation
 * The API is fully documented in the wiki.
 * Go documentation in Wiki.

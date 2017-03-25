@@ -36,8 +36,8 @@ func validateAnswer(q db.Query) error {
 	//create rules
 	valid.Required(q.Key, "key")
 	valid.MaxSize(q.Answer, 800, "answerSize")
-	for _, url := range q.Links {
-		valid.MaxSize(url, 800, "linkSize")
+	for _, url := range q.List {
+		valid.MaxSize(url, 800, "listSize")
 	}
 	if valid.HasErrors() {
 		return errors.New("Invalid Answer") //failed validation

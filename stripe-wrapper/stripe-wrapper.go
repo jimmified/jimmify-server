@@ -1,12 +1,13 @@
 package stripe
 
 import (
-	"github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/charge"
 	"jimmify-server/db"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/stripe/stripe-go"
+	"github.com/stripe/stripe-go/charge"
 )
 
 func init() {
