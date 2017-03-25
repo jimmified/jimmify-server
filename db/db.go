@@ -25,7 +25,7 @@ type Query struct {
 	Answer   string    `json:"answer"`
 	List     []string  `json:"list"`
 	Position int64     `json:"-"`
-	Token    string    `json:"-"`
+	Token    string    `json:"token"`
 	Priority time.Time `json:"-"`
 }
 
@@ -59,6 +59,8 @@ func Init() {
 	if created {
 		CreateTables()
 	}
+	//load links
+	initLinks()
 }
 
 //ResetDB remove existing database and recreate tables
@@ -205,7 +207,7 @@ func MoveToFront(key int64) error {
 
 	timestamp := time.Now()
 	_, err = update.Exec(timestamp, key)
-	log.Println(timestamp)
+	log.Println("A user has paid.")
 
 	if err != nil {
 		return errors.New("Failed to move query to the pront of the queue")

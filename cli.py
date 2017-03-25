@@ -44,6 +44,7 @@ class API():
 		r['key'] = key
 		r['answer'] = answer
 		r['list'] = l
+		r['type'] = "search"
 		r['token'] = self.token
 		print(r)
 		r = requests.post(self.url + "answer", data=json.dumps(r), verify=False)
@@ -71,6 +72,7 @@ class API():
 			data = r.json()
 			print("Login Successful")
 			self.token = data["token"]
+			print(self.token)
 			return True
 		print("Login Failed")
 		return False

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"jimmify-server/auth"
 	"jimmify-server/db"
-	"math/rand"
 	"net/http"
 )
 
@@ -34,7 +33,11 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check if list was provided
+	//append and convert list
+	switch q.Type {
+	case "search":
+		q.List = append(q.List, db.RandomLinks()...)
+	}
 	linkStr, err := json.Marshal(q.List)
 
 	//add query
@@ -47,12 +50,4 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	response["status"] = "true"
 	json.NewEncoder(w).Encode(response)
-}
-
-func RandomLink() string {
-	var links [3]string
-	links[0] = "https://www.youtube.com/watch?v=VxTQKxyJyxw"
-	links[1] = "https://media.giphy.com/media/B6sl8C4moPBGo/giphy.gif"
-	links[2] = "http://i.imgur.com/zrSoDU9.jpg"
-	return links[rand.Intn(len(links))]
 }

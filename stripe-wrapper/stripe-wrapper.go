@@ -2,6 +2,7 @@ package stripe
 
 import (
 	"jimmify-server/db"
+	"jimmify-server/firebase"
 	"log"
 	"os"
 	"strconv"
@@ -36,5 +37,6 @@ func PrioritizeQuestion(token string, qkey string) error {
 	}
 
 	err = db.MoveToFront(i)
+	firebase.Push("Jimmy Payment", "Dolla Dolla Bill Ya'll")
 	return err
 }
