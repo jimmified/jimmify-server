@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"log"
 	"os"
@@ -22,9 +23,10 @@ type Query struct {
 	Text     string    `json:"text"`
 	Type     string    `json:"type"`
 	Answer   string    `json:"answer"`
+	List     []string  `json:"list"`
 	Position int64     `json:"-"`
 	Token    string    `json:"token"`
-	Priority time.Time `json:"priority"`
+	Priority time.Time `json:"-"`
 }
 
 //Charge type
@@ -57,6 +59,8 @@ func Init() {
 	if created {
 		CreateTables()
 	}
+	//load links
+	initLinks()
 }
 
 //ResetDB remove existing database and recreate tables
@@ -79,7 +83,8 @@ func CreateTables() {
 		key integer primary key not null,
 		text varchar(255) not null,
 		type varchar(20) not null,
-		answer varchar(800) null
+		answer varchar(800) null,
+		list varchar(2400) null
 	);
 	CREATE TABLE charges (
 		key varchar(255) primary key
@@ -136,7 +141,7 @@ func GetQueue(num int) ([]Query, error) {
 }
 
 //AnswerQuery move a query to the resolved table with jimmy's answer
-func AnswerQuery(key int64, answer string) error {
+func AnswerQuery(key int64, answer string, list string) error {
 	q := Query{}
 
 	tx, err := SQLDB.Begin() //start transaction
@@ -150,12 +155,12 @@ func AnswerQuery(key int64, answer string) error {
 		return errors.New("Could not find query")
 	}
 	//add to resolved
-	insert, err := tx.Prepare("INSERT into resolved(key, text, type, answer) values(?, ?, ?, ?)")
+	insert, err := tx.Prepare("INSERT into resolved(key, text, type, answer, list) values(?, ?, ?, ?, ?)")
 	if err != nil {
 		tx.Rollback()
 		return errors.New("Error creating Resolved insert")
 	}
-	_, err = insert.Exec(key, q.Text, q.Type, answer)
+	_, err = insert.Exec(key, q.Text, q.Type, answer, list)
 	if err != nil {
 		tx.Rollback()
 		return errors.New("Failed to add to resolved")
@@ -202,7 +207,7 @@ func MoveToFront(key int64) error {
 
 	timestamp := time.Now()
 	_, err = update.Exec(timestamp, key)
-	log.Println(timestamp)
+	log.Println("A user has paid.")
 
 	if err != nil {
 		return errors.New("Failed to move query to the pront of the queue")
@@ -236,9 +241,10 @@ func getQueuePosition(key int64) (int64, error) {
 
 //CheckQuery see if a query is resolved and return the answer
 func CheckQuery(key int64) (Query, error) {
+	var list string
 	q := Query{}
 	//select from resolved
-	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type, &q.Answer, &q.Priority)
+	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE key=(?)", key).Scan(&q.Key, &q.Text, &q.Type, &q.Answer, &list)
 	if err != nil {
 		//get position
 		q.Position, err = getQueuePosition(key)
@@ -247,6 +253,11 @@ func CheckQuery(key int64) (Query, error) {
 			return q, errors.New("Error getting queue position")
 		}
 		return q, errors.New("Query is not resolved")
+	}
+	//convert list to actual list
+	err = json.Unmarshal([]byte(list), &q.List)
+	if err != nil {
+		q.List = nil
 	}
 	return q, nil
 }

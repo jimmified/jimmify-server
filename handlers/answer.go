@@ -33,8 +33,15 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//append and convert list
+	switch q.Type {
+	case "search":
+		q.List = append(q.List, db.RandomLinks()...)
+	}
+	linkStr, err := json.Marshal(q.List)
+
 	//add query
-	err = db.AnswerQuery(q.Key, q.Answer)
+	err = db.AnswerQuery(q.Key, q.Answer, string(linkStr))
 	if err != nil {
 		ReturnInternalServerError(w, err.Error())
 		return

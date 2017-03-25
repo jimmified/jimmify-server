@@ -40,7 +40,7 @@ func TestDB(t *testing.T) {
 
 	//answer query
 	log.Println("Answer the query")
-	err = AnswerQuery(key, "42")
+	err = AnswerQuery(key, "42", "[\"facebook.com\"]")
 	if err != nil {
 		log.Println(err)
 	}

@@ -4,6 +4,7 @@ import (
 	"github.com/stripe/stripe-go"
 	"github.com/stripe/stripe-go/charge"
 	"jimmify-server/db"
+	"jimmify-server/firebase"
 	"log"
 	"os"
 )
@@ -29,5 +30,9 @@ func PrioritizeQuestion(token string, qkey int64) error {
 	log.Println(charge)
 
 	err = db.MoveToFront(qkey)
+	if err != nil {
+		return err
+	}
+	firebase.Push("Jimmy Payment", "Dolla Dolla Bill Ya'll")
 	return err
 }
