@@ -25,7 +25,7 @@ func RandomLinks() []string {
 
 	for len(m) < 3 {
 		i := rand.Intn(len(links))
-		if !m[i] {
+		if !m[i] && links[i] != "" {
 			m[i] = true
 			r = append(r, links[i])
 		}
