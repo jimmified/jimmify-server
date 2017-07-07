@@ -264,18 +264,25 @@ func CheckQuery(key int64) (Query, error) {
 
 //GetRecent get the recently resolved posts
 func GetRecent(num int) ([]Query, error) {
+	var list string
 	resolved := []Query{}
 	r := Query{}
 	//create sql query
-	rows, err := SQLDB.Query("SELECT key,text,type,answer FROM resolved ORDER BY key DESC LIMIT (?)", num)
+	rows, err := SQLDB.Query("SELECT key,text,type,answer,list FROM resolved ORDER BY key DESC LIMIT (?)", num)
 	defer rows.Close() //close query connection when function returns
 	if err != nil {
 		return resolved, errors.New("Error getting recently resolved")
 	}
 	for rows.Next() {
-		err = rows.Scan(&r.Key, &r.Text, &r.Type, &r.Answer)
+		r = Query{}
+		err = rows.Scan(&r.Key, &r.Text, &r.Type, &r.Answer, &list)
 		if err != nil {
 			return resolved, errors.New("Error scanning row")
+		}
+		//convert list to actual list
+		err = json.Unmarshal([]byte(list), &r.List)
+		if err != nil {
+			r.List = nil
 		}
 		resolved = append(resolved, r)
 	}
