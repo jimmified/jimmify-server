@@ -23,7 +23,7 @@ func RandomLinks() []string {
 	// size of this map used to check when 3 unique links have been selected
 	m := make(map[int]bool)
 
-	for len(m) < 3 {
+	for len(m) < 2 {
 		i := rand.Intn(len(links))
 		if !m[i] && links[i] != "" {
 			m[i] = true
