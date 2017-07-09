@@ -28,7 +28,7 @@ func ReturnStatusBadRequest(w http.ResponseWriter, message string) {
 func ReturnUnauthorized(w http.ResponseWriter, message string) {
 	log.Println(message)
 	response := make(map[string]interface{})
-	response["Status"] = false
+	response["status"] = false
 	w.WriteHeader(http.StatusUnauthorized)
 	json.NewEncoder(w).Encode(response)
 }
