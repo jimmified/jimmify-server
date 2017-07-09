@@ -30,7 +30,7 @@ func Check(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		//return status false
 		w.WriteHeader(http.StatusOK)
-		response["status"] = "false"
+		response["status"] = false
 		response["position"] = a.Position
 		json.NewEncoder(w).Encode(response)
 		return
@@ -40,6 +40,6 @@ func Check(w http.ResponseWriter, r *http.Request) {
 	response["answer"] = a.Answer
 	response["list"] = a.List
 	response["text"] = a.Text
-	response["status"] = "true"
+	response["status"] = true
 	json.NewEncoder(w).Encode(response)
 }

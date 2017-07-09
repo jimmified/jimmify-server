@@ -19,6 +19,6 @@ func Recent(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response["recents"] = recents
-	response["status"] = "true"
+	response["status"] = true
 	json.NewEncoder(w).Encode(response)
 }

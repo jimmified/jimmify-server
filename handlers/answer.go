@@ -48,6 +48,6 @@ func Answer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response["status"] = "true"
+	response["status"] = true
 	json.NewEncoder(w).Encode(response)
 }

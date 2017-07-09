@@ -40,6 +40,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response["token"] = token
-	response["status"] = "true"
+	response["status"] = true
 	json.NewEncoder(w).Encode(response)
 }

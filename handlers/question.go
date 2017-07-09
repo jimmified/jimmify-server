@@ -29,7 +29,7 @@ func Question(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         //return status false
         w.WriteHeader(http.StatusOK)
-        response["status"] = "false"
+        response["status"] = false
         json.NewEncoder(w).Encode(response)
         return
     }
@@ -38,6 +38,6 @@ func Question(w http.ResponseWriter, r *http.Request) {
     response["key"] = a.Key
     response["text"] = a.Text
     response["type"] = a.Type
-    response["status"] = "true"
+    response["status"] = true
     json.NewEncoder(w).Encode(response)
 }

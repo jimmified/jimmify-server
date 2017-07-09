@@ -19,6 +19,6 @@ func Queue(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response["queue"] = queries
-	response["status"] = "true"
+	response["status"] = true
 	json.NewEncoder(w).Encode(response)
 }

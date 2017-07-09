@@ -9,6 +9,6 @@ import (
 func Index(w http.ResponseWriter, r *http.Request) {
 	response := make(map[string]interface{})
 	w.WriteHeader(http.StatusOK)
-	response["status"] = "true"
+	response["status"] = true
 	json.NewEncoder(w).Encode(response)
 }
