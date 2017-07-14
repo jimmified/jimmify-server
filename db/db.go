@@ -27,6 +27,7 @@ type Query struct {
 	Position int64     `json:"-"`
 	Token    string    `json:"token"`
 	Priority time.Time `json:"-"`
+	Paid     bool      `json:"paid"`
 }
 
 //Charge type
@@ -123,16 +124,22 @@ func AddQuery(q Query) (int64, error) {
 func GetQueue(num int) ([]Query, error) {
 	queries := []Query{}
 	q := Query{}
+	var priority sql.NullString
 	//create sql query
-	rows, err := SQLDB.Query("SELECT key,text,type FROM queries ORDER BY datetime(priority) DESC LIMIT (?)", num)
+	rows, err := SQLDB.Query("SELECT key,text,type,priority FROM queries ORDER BY datetime(priority) DESC LIMIT (?)", num)
 	defer rows.Close() //close query connection when function returns
 	if err != nil {
 		return queries, errors.New("Error getting queue")
 	}
 	for rows.Next() {
-		err = rows.Scan(&q.Key, &q.Text, &q.Type)
+		q = Query{}
+		err = rows.Scan(&q.Key, &q.Text, &q.Type, &priority)
 		if err != nil {
 			return queries, errors.New("Error scanning row")
+		}
+		// set the priority timestamp if the user has paid
+		if priority.Valid {
+			q.Paid = true
 		}
 		queries = append(queries, q)
 	}
