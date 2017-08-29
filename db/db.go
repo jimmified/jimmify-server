@@ -36,7 +36,7 @@ type Charge struct {
 	Query int64  `json:"query"`
 }
 
-//InitDB init sql
+//Init init sql
 func Init() {
 	var err error
 	var created = false
@@ -145,6 +145,32 @@ func GetQueue(num int) ([]Query, error) {
 	}
 
 	return queries, nil
+}
+
+//AnswerDuplicates looks for duplicate queries
+func AnswerDuplicates() {
+	q := Query{}
+	i := 0
+	//create sql query
+	rows, err := SQLDB.Query("SELECT key,text,type FROM queries")
+	defer rows.Close()
+	if err != nil {
+		log.Println(err)
+	}
+	for rows.Next() {
+		q = Query{}
+		key := 0
+		err := rows.Scan(&q.Key, &q.Text, &q.Type)
+		if err == nil {
+			err := SQLDB.QueryRow("SELECT key FROM resolved WHERE text=(?)", q.Text).Scan(&key)
+			if err == nil {
+				i = i + 1
+				log.Println(q.Text)
+			}
+		}
+
+	}
+	log.Println(i)
 }
 
 //AnswerQuery move a query to the resolved table with jimmy's answer

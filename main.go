@@ -56,6 +56,7 @@ func parseFlags() {
 	logPtr := flag.Bool("log", false, "Contols writing to log file.")
 	pushPtr := flag.Bool("nopush", false, "Contols whether push notifications are sent.")
 	resetPtr := flag.Bool("resetdb", false, "Whether to reset the database.")
+	dupePtr := flag.Bool("dedupe", false, "Whether to answer duplicate questions.")
 	flag.Parse() //parse flags
 	//Handle flags
 	if *resetPtr == true {
@@ -74,5 +75,8 @@ func parseFlags() {
 		handlers.PushEnabled = false
 	} else {
 		handlers.PushEnabled = true
+	}
+	if *dupePtr == true {
+		db.AnswerDuplicates()
 	}
 }
