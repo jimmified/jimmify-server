@@ -30,10 +30,15 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//add query
-	key, err := db.AddQuery(q)
-	if err != nil {
-		ReturnInternalServerError(w, err.Error())
-		return
+	isDupe, d := db.IsDuplicate(q.Text)
+	if !isDupe {
+		key, err := db.AddQuery(q)
+		if err != nil {
+			ReturnInternalServerError(w, err.Error())
+			return
+		}
+	} else {
+		key := d.Key
 	}
 
 	if PushEnabled == true {

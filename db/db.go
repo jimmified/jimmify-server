@@ -6,6 +6,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strconv"
 	"time"
 	//driver for sqlite
 	_ "github.com/mattn/go-sqlite3"
@@ -24,6 +25,7 @@ type Query struct {
 	Type     string    `json:"type"`
 	Answer   string    `json:"answer"`
 	List     []string  `json:"list"`
+	ListJ    string    `json:"-"`
 	Position int64     `json:"-"`
 	Token    string    `json:"token"`
 	Priority time.Time `json:"-"`
@@ -147,10 +149,22 @@ func GetQueue(num int) ([]Query, error) {
 	return queries, nil
 }
 
+//IsDuplicate check if a text string has been answered
+func IsDuplicate(text string) (bool, Query) {
+	q := Query{}
+	//select from resolved
+	err := SQLDB.QueryRow("SELECT * FROM resolved WHERE text=(?)", text).Scan(&q.Key, &q.Text, &q.Type, &q.Answer, &q.ListJ)
+	if err == nil {
+		return true, q
+	}
+	return false, q
+}
+
 //AnswerDuplicates looks for duplicate queries
 func AnswerDuplicates() {
 	q := Query{}
 	i := 0
+	log.Println("Removing duplicates")
 	//create sql query
 	rows, err := SQLDB.Query("SELECT key,text,type FROM queries")
 	defer rows.Close()
@@ -159,18 +173,19 @@ func AnswerDuplicates() {
 	}
 	for rows.Next() {
 		q = Query{}
-		key := 0
 		err := rows.Scan(&q.Key, &q.Text, &q.Type)
 		if err == nil {
-			err := SQLDB.QueryRow("SELECT key FROM resolved WHERE text=(?)", q.Text).Scan(&key)
-			if err == nil {
-				i = i + 1
-				log.Println(q.Text)
+			isDupe, d := IsDuplicate(q.Text)
+			if isDupe {
+				i++
+				err := AnswerQuery(q.Key, d.Answer, d.ListJ)
+				if err != nil {
+					log.Println(err)
+				}
 			}
 		}
-
 	}
-	log.Println(i)
+	log.Println(strconv.Itoa(i) + " duplicates removed.")
 }
 
 //AnswerQuery move a query to the resolved table with jimmy's answer
