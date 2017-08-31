@@ -10,7 +10,7 @@ import (
 //PushEnabled whether or not to send push
 var PushEnabled bool
 
-//Query: submit a query
+//Query : submit a query
 func Query(w http.ResponseWriter, r *http.Request) {
 	var q db.Query
 	response := make(map[string]interface{})
@@ -31,14 +31,13 @@ func Query(w http.ResponseWriter, r *http.Request) {
 
 	//add query
 	isDupe, d := db.IsDuplicate(q.Text)
+	key := d.Key
 	if !isDupe {
-		key, err := db.AddQuery(q)
+		key, err = db.AddQuery(q)
 		if err != nil {
 			ReturnInternalServerError(w, err.Error())
 			return
 		}
-	} else {
-		key := d.Key
 	}
 
 	if PushEnabled == true {
