@@ -167,7 +167,9 @@ func AnswerDuplicates() {
 	log.Println("Removing duplicates")
 	//create sql query
 	rows, err := SQLDB.Query("SELECT key,text,type FROM queries")
-	defer rows.Close()
+	var keys []int64
+	var answers []string
+	var lists []string
 	if err != nil {
 		log.Println(err)
 	}
@@ -177,15 +179,20 @@ func AnswerDuplicates() {
 		if err == nil {
 			isDupe, d := IsDuplicate(q.Text)
 			if isDupe {
+				keys = append(keys, q.Key)
+				answers = append(answers, d.Answer)
+				lists = append(lists, d.ListJ)
 				i++
-				err := AnswerQuery(q.Key, d.Answer, d.ListJ)
-				if err != nil {
-					log.Println(err)
-				}
 			}
 		}
 	}
-	log.Println(strconv.Itoa(i) + " duplicates removed.")
+	rows.Close()
+	for i := 0; i < len(keys); i++ {
+		err := AnswerQuery(keys[i], answers[i], lists[i])
+		if err != nil {
+			log.Println(err)
+		}
+	}
 }
 
 //AnswerQuery move a query to the resolved table with jimmy's answer
