@@ -30,14 +30,11 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//add query
-	isDupe, d := db.IsDuplicate(q.Text)
-	key := d.Key
-	if !isDupe {
-		key, err = db.AddQuery(q)
-		if err != nil {
-			ReturnInternalServerError(w, err.Error())
-			return
-		}
+	//isDupe, d := db.IsDuplicate(q.Text) this line can stop duplicates
+	key, err := db.AddQuery(q)
+	if err != nil {
+		ReturnInternalServerError(w, err.Error())
+		return
 	}
 
 	if PushEnabled == true {
