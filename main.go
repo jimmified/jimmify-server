@@ -57,6 +57,7 @@ func parseFlags() {
 	pushPtr := flag.Bool("nopush", false, "Contols whether push notifications are sent.")
 	resetPtr := flag.Bool("resetdb", false, "Whether to reset the database.")
 	dupePtr := flag.Bool("dedupe", false, "Whether to answer duplicate questions.")
+	ffPtr := flag.Bool("ff", false, "Fast forward answers.")
 	flag.Parse() //parse flags
 	//Handle flags
 	if *resetPtr == true {
@@ -78,5 +79,8 @@ func parseFlags() {
 	}
 	if *dupePtr == true {
 		db.AnswerDuplicates()
+	}
+	if *ffPtr == true {
+		db.FastForward()
 	}
 }

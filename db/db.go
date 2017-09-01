@@ -160,10 +160,37 @@ func IsDuplicate(text string) (bool, Query) {
 	return false, q
 }
 
+//FastForward auto answer questions that are old
+func FastForward() {
+	var queries []Query
+	count := 0
+	log.Println("Fast Forwarding")
+	//create sql query
+	rows, err := SQLDB.Query("SELECT key,text,type FROM queries")
+	if err != nil {
+		log.Println(err)
+	}
+	for rows.Next() {
+		q := Query{}
+		err := rows.Scan(&q.Key, &q.Text, &q.Type)
+		if err == nil {
+			queries = append(queries, q)
+		}
+	}
+	rows.Close()
+	for i := 0; i < len(queries)-10; i++ {
+		err := AnswerQuery(queries[i].Key, "Hey this is Jimmy, I'm a few thousand searches behind and pasting this answer in. Ask again if you want this answered.", "{}")
+		if err != nil {
+			log.Println(err)
+		}
+		count++
+	}
+	log.Println(strconv.Itoa(count) + " queries auto answered")
+}
+
 //AnswerDuplicates looks for duplicate queries
 func AnswerDuplicates() {
-	q := Query{}
-	i := 0
+	count := 0
 	log.Println("Removing duplicates")
 	//create sql query
 	rows, err := SQLDB.Query("SELECT key,text,type FROM queries")
@@ -172,7 +199,7 @@ func AnswerDuplicates() {
 		log.Println(err)
 	}
 	for rows.Next() {
-		q = Query{}
+		q := Query{}
 		err := rows.Scan(&q.Key, &q.Text, &q.Type)
 		if err == nil {
 			isDupe, d := IsDuplicate(q.Text)
@@ -182,7 +209,7 @@ func AnswerDuplicates() {
 				a.Answer = d.Answer
 				a.ListJ = d.ListJ
 				answers = append(answers, a)
-				i++
+				count++
 			}
 		}
 	}
@@ -193,7 +220,7 @@ func AnswerDuplicates() {
 			log.Println(err)
 		}
 	}
-	log.Println(strconv.Itoa(i) + " duplicates removed")
+	log.Println(strconv.Itoa(count) + " duplicates removed")
 }
 
 //AnswerQuery move a query to the resolved table with jimmy's answer
