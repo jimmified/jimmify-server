@@ -179,7 +179,7 @@ func FastForward() {
 	}
 	rows.Close()
 	for i := 0; i < len(queries)-10; i++ {
-		err := AnswerQuery(queries[i].Key, "Hey this is Jimmy, I'm a few thousand searches behind and pasting this answer in. Ask again if you want this answered.", "{}")
+		err := AnswerQuery(queries[i].Key, "Hey this is Jimmy, I'm a few thousand searches behind and pasting this answer in. Ask again if you want this answered.", "[\"http://gizoogle.com\", \"http://isitchristmas.com\"]")
 		if err != nil {
 			log.Println(err)
 		}
