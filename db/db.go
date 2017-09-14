@@ -433,7 +433,18 @@ func AddExpoClient(UUID string, expoID string) error {
 	err := SQLDB.QueryRow("SELECT UUID FROM expo WHERE UUID=?", UUID).Scan(&c.UUID)
 
 	if err == nil {
-		 return errors.New("Client already exists")
+		 update, err := SQLDB.Prepare("UPDATE expo SET expoID=? WHERE UUID=?")
+		 if err != nil {
+		 	return errors.New("Error create expo client update")
+		 }
+
+		 _, err = update.Exec(expoID, UUID)
+
+		 if err != nil {
+		 	return errors.New("Error updating client")
+		 }
+
+		 return nil
 	}
 
 	insert, err := SQLDB.Prepare("INSERT into expo(UUID, expoID) values(?, ?)")
@@ -452,5 +463,19 @@ func AddExpoClient(UUID string, expoID string) error {
 
 // RemoveExpoClient - removes the Expo Client associated with the device UUID
 func RemoveExpoClient(UUID string) error {
+	c := Expo{}
+	err := SQLDB.QueryRow("SELECT UUID FROM expo WHERE UUID=?", UUID).Scan(&c.UUID)
+
+	if err != nil {
+		return errors.New("Client not registered")
+	}
+
+	delete, err := SQLDB.Prepare("DELETE from expo WHERE UUID=(?)")
+	_, err = delete.Exec(UUID)
+
+	if err != nil {
+		return errors.New("Failed to delete Client from DB")
+	}
+
 	return nil
 }

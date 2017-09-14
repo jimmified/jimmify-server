@@ -5,6 +5,7 @@ import (
     "jimmify-server/db"
     "jimmify-server/auth"
     "net/http"
+    "log"
 )
 
 type ExpoMsg struct {
@@ -32,6 +33,7 @@ func ExpoRegister(w http.ResponseWriter, r *http.Request) {
     err = db.AddExpoClient(msg.UUID, msg.ExpoID)
 
     if err != nil {
+        log.Println(err.Error())
         ReturnInternalServerError(w, err.Error())
         return
     }
