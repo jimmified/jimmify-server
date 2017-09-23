@@ -4,7 +4,7 @@ import (
 	"flag"
 	"jimmify-server/auth"
 	"jimmify-server/db"
-	"jimmify-server/firebase"
+	"jimmify-server/notifications"
 	"jimmify-server/handlers"
 	"log"
 	"net/http"
@@ -26,7 +26,7 @@ func main() {
 	}
 	r := getRoutes(path) //create routes
 
-	firebase.Init()
+	notifications.Init()
 
 	log.Println("Starting Jimmy Server")
 	http.ListenAndServe(":3000", r)
@@ -47,6 +47,8 @@ func getRoutes(path string) *http.ServeMux {
 	mux.HandleFunc("/api/charge", handlers.Charge)
 	mux.HandleFunc("/api/login", handlers.Login)
 	mux.HandleFunc("/api/renew", handlers.Renew)
+	mux.HandleFunc("/api/expo/add", handlers.ExpoRegister)
+	mux.HandleFunc("/api/expo/del", handlers.ExpoUnRegister)
 	return mux
 }
 

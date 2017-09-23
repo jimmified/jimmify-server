@@ -38,6 +38,11 @@ type Charge struct {
 	Query int64  `json:"query"`
 }
 
+type Expo struct {
+	UUID string `json:"UUID"`
+	ExpoID string `json:"expoID"`
+}
+
 //Init init sql
 func Init() {
 	var err error
@@ -76,25 +81,35 @@ func ResetDB() {
 //CreateTables create the user and posts tables
 func CreateTables() {
 	createTables := `
-	CREATE TABLE queries (
+	
+    CREATE TABLE queries (
 		key integer primary key autoincrement,
 		text varchar(255) not null,
 		type varchar(20) not null,
 		priority timestamp
 	);
-	CREATE TABLE resolved (
+	
+    CREATE TABLE resolved (
 		key integer primary key not null,
 		text varchar(255) not null,
 		type varchar(20) not null,
 		answer varchar(800) null,
 		list varchar(2400) null
 	);
-	CREATE TABLE charges (
+	
+    CREATE TABLE charges (
 		key varchar(255) primary key
 	);
+
+    CREATE TABLE expo (
+        UUID varchar(255) primary key not null,
+        expoID varchar(255) not null
+    );
+
 	DELETE from queries;
-  DELETE from resolved;
+    DELETE from resolved;
 	DELETE from charges;
+	DELETE from expo;
 	`
 	//Create the users table
 	_, err := SQLDB.Exec(createTables)
@@ -387,4 +402,80 @@ func GetQuestion(key int64) (Query, error) {
 		}
 	}
 	return q, nil
+}
+
+// GetExpoClients - gets all of the ExpoIDs to send push notifications to
+func GetExpoClients() ([]Expo, error) {
+
+	clients := []Expo{}
+
+	rows, err := SQLDB.Query("SELECT expoID from expo")
+	defer rows.Close() //close query connection when function returns
+	if err != nil {
+		return clients, err
+	}
+
+	for rows.Next() {
+		c := Expo{}
+		err = rows.Scan(&c.ExpoID)
+		if err != nil {
+			return clients, errors.New("Error parsing clients from DB")
+		}
+		clients = append(clients, c)
+	}
+
+	return clients, nil
+}
+
+// AddExpoClient - adds a new Expo Client to the list
+func AddExpoClient(UUID string, expoID string) error {
+	c := Expo{}
+	err := SQLDB.QueryRow("SELECT UUID FROM expo WHERE UUID=?", UUID).Scan(&c.UUID)
+
+	if err == nil {
+		 update, err := SQLDB.Prepare("UPDATE expo SET expoID=? WHERE UUID=?")
+		 if err != nil {
+		 	return errors.New("Error create expo client update")
+		 }
+
+		 _, err = update.Exec(expoID, UUID)
+
+		 if err != nil {
+		 	return errors.New("Error updating client")
+		 }
+
+		 return nil
+	}
+
+	insert, err := SQLDB.Prepare("INSERT into expo(UUID, expoID) values(?, ?)")
+
+	if err != nil {
+		return errors.New("Error creating expo client insert")
+	}
+
+	_, err = insert.Exec(UUID, expoID)
+	if err != nil {
+		return errors.New("Failed to insert client into db")
+	}
+
+	return nil
+}
+
+// RemoveExpoClient - removes the Expo Client associated with the device UUID
+func RemoveExpoClient(UUID string) error {
+	c := Expo{}
+	err := SQLDB.QueryRow("SELECT UUID FROM expo WHERE UUID=?", UUID).Scan(&c.UUID)
+
+	if err != nil {
+		return errors.New("Client not registered")
+	}
+
+	delete, err := SQLDB.Prepare("DELETE from expo WHERE UUID=(?)")
+	_, err = delete.Exec(UUID)
+
+	if err != nil {
+		return errors.New("Failed to delete Client from DB")
+	}
+
+	return nil
 }

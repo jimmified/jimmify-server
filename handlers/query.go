@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"jimmify-server/db"
-	"jimmify-server/firebase"
+	"jimmify-server/notifications"
 	"net/http"
 )
 
@@ -38,7 +38,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if PushEnabled == true {
-		firebase.Push("Jimmy Query", q.Text)
+		notifications.Push("Jimmy Query", q.Text)
 	}
 
 	w.WriteHeader(http.StatusOK)

@@ -1,4 +1,4 @@
-package firebase
+package notifications
 
 import (
 	"bytes"
@@ -26,7 +26,7 @@ func Init() {
 }
 
 //Push : Sends a push notification using Google Cloud Messaging
-func Push(title string, body string) {
+func PushFirebase(title string, body string) {
 	var jsonStr = []byte(fmt.Sprintf(`{"to": "/topics/%s", "priority" : "high", "notification": {"body": "%s", "icon" : "ic_notify", "tag":"JIMMY", "title": "%s"}}`, topic, body, title))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("Authorization", "key="+serverKey)
